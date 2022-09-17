@@ -51,7 +51,7 @@ class Queue {
 
         while (currNode != null) {
             System.out.println("Index: "+ i + "\n" +
-                                currNode.toString() + "\n");
+                                currNode.toString());
 
             // Set the new next
             currNode = currNode.getNext();

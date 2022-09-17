@@ -28,6 +28,6 @@ class Node {
 
     @Override
     public String toString() {
-        return("Name: " + this.getName());
+        return("Name: " + this.getName() + "\n");
     } // toString
 } // Node
