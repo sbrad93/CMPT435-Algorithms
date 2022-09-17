@@ -1,13 +1,15 @@
 class Node {
 
-    String name = "";
-    Node next = null;
+    private String name = "";
+    private Node next = null;
 
+    /* Node class constructor */
     public Node(String name) {
         this.name = name;
         this.next = null;
     }
 
+    /* Getters and Setters */
     public String getName() {
         return this.name;
     } // getName

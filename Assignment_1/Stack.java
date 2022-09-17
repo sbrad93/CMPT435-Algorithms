@@ -1,8 +1,9 @@
 class Stack {
 
-    Node top = null;
-    int length = 0;
+    private Node top = null;
+    private int length = 0;
 
+    /* Stack class constructor */
     Stack() {
         this.length = 0;
     }
@@ -11,7 +12,7 @@ class Stack {
         Node x = null;
         if (top != null) {
             x = this.top;
-            this.top = x.next;
+            this.top = x.getNext();
 
             this.length--;
         }
@@ -21,7 +22,8 @@ class Stack {
     public void push(String str) {
         Node newNode = new Node(str);
 
-        newNode.next = this.top;
+        // newNode.next = this.top;
+        newNode.setNext(this.top);
         this.top = newNode;
 
         this.length++;
@@ -35,10 +37,17 @@ class Stack {
             System.out.println(currNode.toString());
 
             // Set the new next
-            currNode = currNode.next;
+            currNode = currNode.getNext();
         }
     } // print
 
+    public boolean isEmpty() {
+        if (this.top == null) {
+            return true;
+        } else return false;
+    } // isEmpty
+
+    /* Getters and Setters */
     public Stack getStack() {
         return this;
     } // getStack
@@ -46,6 +55,10 @@ class Stack {
     public Node getTop() {
         return this.top;
     } // getTop
+
+    public int getLength() {
+        return this.length;
+    } // getLength
 
     public void setTop(Node newTop) {
         this.top = newTop;

@@ -1,8 +1,10 @@
 class LinkedList {
 
-    Node head = null;
+    private Node head = null;
 
+    /* LinkedList class constructor */
     LinkedList() {
+        this.head = null;
     }
 
     public void add(String str) {
@@ -14,11 +16,12 @@ class LinkedList {
         } else {
             // Otherwise traverse entire list and add newNode to the end
             Node lastNode = this.head;
-            while (lastNode.next != null) {
-                lastNode = lastNode.next;
+            while (lastNode.getNext() != null) {
+                lastNode = lastNode.getNext();
             }
 
-            lastNode.next = newNode;
+            // lastNode.next = newNode;
+            lastNode.setNext(newNode);
         }
     } // add
 
@@ -29,14 +32,24 @@ class LinkedList {
 
         while (currNode != null) {
             System.out.println("Index: "+ i + "\n" +
-                                currNode.toString() + "\n\n");
+                                currNode.toString());
 
             // Set the new next
-            currNode = currNode.next;
+            currNode = currNode.getNext();
             i++;
         }
+        System.out.println();
     } // print
 
+    public boolean isEmpty() {
+        if (this.head == null) {
+            return true;
+        } else {
+            return false;
+        }
+    } // isEmpty
+
+    /* Getters and Setters */
     public LinkedList getLinkedList() {
         return this;
     } // getLinkedList
