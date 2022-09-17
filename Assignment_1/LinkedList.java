@@ -1,11 +1,13 @@
 class LinkedList {
 
     private Node head = null;
+    private int length = 0;
 
     /* LinkedList class constructor */
     LinkedList() {
         this.head = null;
-    }
+        this.length = 0;
+    } // LinkedList
 
     public void add(String str) {
         Node newNode = new Node(str);
@@ -23,7 +25,34 @@ class LinkedList {
             // lastNode.next = newNode;
             lastNode.setNext(newNode);
         }
+        //increment length
+        this.length++;
     } // add
+
+    public void remove(String str) {
+        Node currNode = this.head;
+        Node prevNode = null;
+        int i =0;
+        while (currNode != null) {
+            if (str.equals(currNode.getName())) {
+                if (prevNode == null) {
+                    // Removing the head of the list
+                    // Update head node
+                    this.head = currNode.getNext();
+                } else {
+                    // Connect prevNode's next to currNode's next
+                    prevNode.setNext(currNode.getNext());
+                    // CurrNode is removed
+                    currNode.setNext(null);
+                }
+            }
+            i++;
+            prevNode = currNode;
+            currNode = currNode.getNext();
+        }
+        //decrement length
+        this.length--;
+    } // remove
 
     public void print() {
         // Prints all nodes in the list

@@ -6,7 +6,7 @@ class Stack {
     /* Stack class constructor */
     Stack() {
         this.length = 0;
-    }
+    } //Stack
 
     public Node pop() {
         Node x = null;

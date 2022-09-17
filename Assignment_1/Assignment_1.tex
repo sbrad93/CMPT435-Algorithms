@@ -1,0 +1,796 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CMPT 435
+% Some Semester
+% Assignment 1
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from: http://www.LaTeXTemplates.com
+% Original author: % Frits Wenneker (http://www.howtotex.com)
+% License: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% Modified by Alan G. Labouseur  - alan@labouseur.com
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[letterpaper, 10pt,DIV=13]{scrartcl} 
+\usepackage{minted}
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm,xfrac} % Math packages
+\usepackage{sectsty} % Allows customizing section commands
+\usepackage{graphicx}
+\usepackage[lined,linesnumbered,commentsnumbered]{algorithm2e}
+\usepackage{listings}
+\usepackage{parskip}
+\usepackage{lastpage}
+
+\allsectionsfont{\normalfont\scshape} % Make all section titles in default font and small caps.
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{page \thepage\ of \pageref{LastPage}} % Page numbering for right footer
+
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs.
+
+\binoppenalty=3000
+\relpenalty=3000
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+   \normalfont \normalsize 
+   \textsc{CMPT 435 - Fall 2022 - Dr. Labouseur} \\[10pt] % Header stuff.
+   \horrule{0.5pt} \\[0.25cm] 	% Top horizontal rule
+   \huge Assignment One  \\     	    % Assignment title
+   \horrule{0.5pt} \\[0.25cm] 	% Bottom horizontal rule
+}
+
+\author{Shannon Brady \\ \normalsize shannon.brady2@Marist.edu}
+
+\date{\normalsize\today} 	% Today's date.
+
+\begin{document}
+\maketitle % Print the title
+
+
+%----------------------------------------------------------------------------------------
+%   start Node and Linked List
+%----------------------------------------------------------------------------------------
+\section{Node and LinkedList}
+
+\subsection{Node Class}
+A Node has the following attributes:
+\begin{enumerate}
+  \item Name (a string value)
+  \item Next (a Node value indicating the next item in the linked list, stack, or queue)
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class Node {
+
+    private String name = "";
+    private Node next = null;
+
+    /* Node class constructor */
+    public Node(String name) {
+        this.name = name;
+        this.next = null;
+    } // Node
+
+    /* Getters and Setters */
+    public String getName() {
+        return this.name;
+    } // getName
+
+    public Node getNext() {
+        return this.next;
+    } // getNext
+
+    public void setName(String newName) {
+        this.name = newName;
+    } // setName
+
+    public void setNext(Node newNext) {
+        this.next = newNext;
+    } // setNext
+
+    @Override
+    public String toString() {
+        return("Name: " + this.getName() + "\n");
+    } // toString
+} // Node
+\end{minted}
+
+\subsection{LinkedList Class}
+The LinkedList class implements a linked list data structure by utilizing the Node class. A LinkedList has the following attributes:
+\begin{enumerate}
+    \item head (a Node value indicating the first item in the linked list)
+    \item length (an integer value indicating list length)
+\end{enumerate}
+
+A LinkedList  has the following methods: 
+\begin{enumerate}
+    \item add<string> (add a new Node, line 13) 
+        \begin{enumerate}
+            \item If the head is null, the new node becomes the head; otherwise, add the node to the end of the list.
+        \end{enumerate}
+    \item remove<string> (remove an existing Node, line 33)
+        \begin{enumerate}
+            \item First we check if the target string matches a node name in the list. Next, if there's not a previous node, set the head to the current node's next. If there is a previous node, connect the previous node's next to the current node's next.
+        \end{enumerate}
+    \item print (print all Nodes in the list, line 58)
+    \item isEmpty (checks if list is empty, line 74)
+        \begin{enumerate}
+            \item If the head is null, then the list is empty.
+        \end{enumerate}
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+
+class LinkedList {
+
+    private Node head = null;
+    private int length = 0;
+
+    /* LinkedList class constructor */
+    LinkedList() {
+        this.head = null;
+        this.length = 0;
+    } // LinkedList
+
+    public void add(String str) {
+        Node newNode = new Node(str);
+
+        if (this.head == null) {
+            // If the list is empty, set the head
+            this.head = newNode;
+        } else {
+            // Otherwise traverse entire list and add newNode to the end
+            Node lastNode = this.head;
+            while (lastNode.getNext() != null) {
+                lastNode = lastNode.getNext();
+            }
+
+            // lastNode.next = newNode;
+            lastNode.setNext(newNode);
+        }
+        //increment length
+        this.length++;
+    } // add
+
+    public void remove(String str) {
+        Node currNode = this.head;
+        Node prevNode = null;
+        int i =0;
+        while (currNode != null) {
+            if (str.equals(currNode.getName())) {
+                if (prevNode == null) {
+                    // Removing the head of the list
+                    // Update head node
+                    this.head = currNode.getNext();
+                } else {
+                    // Connect prevNode's next to currNode's next
+                    prevNode.setNext(currNode.getNext());
+                    // CurrNode is removed
+                    currNode.setNext(null);
+                }
+            }
+            i++;
+            prevNode = currNode;
+            currNode = currNode.getNext();
+        }
+        //decrement length
+        this.length--;
+    } // remove
+
+    public void print() {
+        // Prints all nodes in the list
+        Node currNode = this.head;
+        int i = 0;
+
+        while (currNode != null) {
+            System.out.println("Index: "+ i + "\n" +
+                                currNode.toString());
+
+            // Set the new next
+            currNode = currNode.getNext();
+            i++;
+        }
+        System.out.println();
+    } // print
+
+    public boolean isEmpty() {
+        if (this.head == null) {
+            return true;
+        } else {
+            return false;
+        }
+    } // isEmpty
+
+    /* Getters and Setters */
+    public LinkedList getLinkedList() {
+        return this;
+    } // getLinkedList
+
+    public Node getHead() {
+        return this.head;
+    } // getHead
+
+    public void setHead(Node newHead) {
+        this.head = newHead;
+    } // setHead
+
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Node and Linked List
+%----------------------------------------------------------------------------------------
+
+
+%----------------------------------------------------------------------------------------
+%   start Stack
+%----------------------------------------------------------------------------------------
+\section{Stack Class}
+The Stack class implements a stack data structure by utilizing the Node class. A Stack has the following attributes:
+\begin{enumerate}
+    \item top (a Node value indicating the first item in the stack)
+    \item length (an integer value indicating stack length)
+\end{enumerate}
+
+A Stack has the following methods: 
+\begin{enumerate}
+    \item pop (remove a Node from the stack, line 11) 
+        \begin{enumerate}
+            \item If top is not null, then set the top to the next item in the stack.
+        \end{enumerate}
+    \item push (add a Node to the stack, line 22)
+        \begin{enumerate}
+            \item The new Node becomes the top of the stack.
+        \end{enumerate}
+    \item print (print all Nodes in the stack, line 32)
+    \item isEmpty (checks if stack is empty, line 44)
+        \begin{enumerate}
+            \item If the top is null, then the stack is empty.
+        \end{enumerate}
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class Stack {
+
+    private Node top = null;
+    private int length = 0;
+
+    /* Stack class constructor */
+    Stack() {
+        this.length = 0;
+    } //Stack
+
+    public Node pop() {
+        Node x = null;
+        if (top != null) {
+            x = this.top;
+            this.top = x.getNext();
+
+            this.length--;
+        }
+        return x;
+    } // pop
+
+    public void push(String str) {
+        Node newNode = new Node(str);
+
+        // newNode.next = this.top;
+        newNode.setNext(this.top);
+        this.top = newNode;
+
+        this.length++;
+    } // push
+
+    public void print() {
+        // Prints all nodes in the stack
+        Node currNode = this.top;
+
+        while (currNode != null) {
+            System.out.println(currNode.toString());
+
+            // Set the new next
+            currNode = currNode.getNext();
+        }
+    } // print
+
+    public boolean isEmpty() {
+        if (this.top == null) {
+            return true;
+        } else return false;
+    } // isEmpty
+
+    /* Getters and Setters */
+    public Stack getStack() {
+        return this;
+    } // getStack
+
+    public Node getTop() {
+        return this.top;
+    } // getTop
+
+    public int getLength() {
+        return this.length;
+    } // getLength
+
+    public void setTop(Node newTop) {
+        this.top = newTop;
+    } // setTop
+}
+
+\end{minted}
+
+%----------------------------------------------------------------------------------------
+%   end Stack
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%   start Queue
+%----------------------------------------------------------------------------------------
+\section{Queue Class}
+The Queue class implements a queue data structure by utilizing the Node class. A Queue has the following attributes:
+\begin{enumerate}
+    \item head (a Node value indicating the first item in the queue)
+    \item tail (a Node value indicating the last item in the queue)
+    \item length (an integer value indicating the length of the queue)
+\end{enumerate}
+
+A Queue has the following methods: 
+\begin{enumerate}
+    \item enqueue (add a Node to the end of the queue, line 14) 
+        \begin{enumerate}
+            \item If the queue is empty, then the head and tail both point to the same Node; otherwise only the tail is updated.
+        \end{enumerate}
+    \item dequeue (remove a Node from the front of the Queue, line 33)
+        \begin{enumerate}
+            \item If the queue is not empty, update the head to the next Node
+        \end{enumerate}
+    \item print (print all Nodes in the Queue, line 47)
+    \item isEmpty (checks if queue is empty, line 63)
+        \begin{enumerate}
+            \item If the head is null, then the queue is empty.
+        \end{enumerate}
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class Queue {
+
+    private Node head = null;
+    private Node tail = null;
+    private int length = 0;
+
+    /* Queue class constructor */
+    Queue() {
+        this.head = null;
+        this.tail = null;
+        this.length = 0;
+    }
+
+    public void enqueue(String str) {
+        Node newNode = new Node(str);
+
+        if (this.head == null) {
+            // Head and tail are the same if queue length is 1
+            this.head = newNode;
+            this.tail = newNode;
+        } else {
+            // Make the tail's next the new node
+            this.tail.setNext(newNode);
+            // Make the new node the tail
+            this.tail = newNode;
+            // Set the new node next value to null
+            newNode.setNext(null);
+        }
+
+        this.length++;
+    } // enqueue
+
+    public Node dequeue() {
+        Node x = null;
+        if (this.head != null) {
+            // If the queue isn't empty, grab the current head node
+            x = this.head;
+            // Update the head
+            this.head = x.getNext();
+            x.setNext(null);
+            // Decrement the queue length
+            this.length--;
+        }
+        return x;
+    } // dequeue
+
+    public void print() {
+        // Prints all nodes in the list
+        Node currNode = this.head;
+        int i = 0;
+
+        while (currNode != null) {
+            System.out.println("Index: "+ i + "\n" +
+                                currNode.toString());
+
+            // Set the new next
+            currNode = currNode.getNext();
+            i++;
+        }
+        System.out.println();
+    }
+
+    public boolean isEmpty() {
+        if (this.head == null) {
+            return true;
+        } else {
+            return false;
+        }
+    } // isEmpty
+
+    /* Getters and Setters */
+    public Node getHead() {
+        return this.head;
+    } // getHead
+
+    public Node getTail() {
+        return this.tail;
+    } // getTail
+
+    public int getLength() {
+        return this.length;
+    } // getLength
+
+    public void setHead(Node newHead) {
+        this.head = newHead;
+    } // setHead
+
+    public void setTail(Node newTail) {
+        this.tail = newTail;
+    } // setTail
+}
+\end{minted}
+
+%----------------------------------------------------------------------------------------
+%   end Queue
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%   start Main and Test
+%----------------------------------------------------------------------------------------
+\section{Test and Main}
+\subsection{Test Class}
+The Test class uses various methods to test each of the previously outlined data structures.
+
+A Test has the following methods: 
+\begin{enumerate}
+    \item testMyLinkedList (validates add, remove, and isEmpty methods, line 16)
+    \item testMyStack (validates pop, push, and isEmpty methods, line 49)
+    \item testMyQueue (validates enqueue, dequeue, and isEmpty methods, line 94)
+    \item checkPalindrome (identifies all palindromes in a text file, line 153)
+        \begin{enumerate}
+            \item Read an input file and add all lines of text to an array.
+            \item Loop through all items in the array and remove all whitespace and special symbols, then make all letters lowercase.
+            \item For each line of text, push each character to a stack and a queue. Then loop through either the stack or the queue (does not matter since length is equivalent) and pop and dequeue a letter from the stack and queue, respectively. 
+            \item If the letters returned do not match at any given point, then the phrase cannot be a palindrome.
+            \item Add all palindromes to a linked list and print the results.
+        \end{enumerate}
+\end{enumerate}
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+class Test {
+
+    Test() {
+    }
+
+    /* Testing Methods:
+     *      testMyLinkedList()
+     *      testMyStack()
+     *      testMyQueue()
+     *      checkPalindrome()
+     */
+    public void testMyLinkedList() {
+        // Create a linked list of really awesome songs
+        LinkedList songs = new LinkedList();
+
+        // Validate the list is empty
+        if (songs.isEmpty()) {
+            System.out.println("Your list is empty.");
+        }
+
+        // Add some really awesome songs
+        songs.add("Particles - Nothing But Thieves");
+        songs.add("Sugarcoat - Kid Bloom");
+        songs.add("Little One - Highly Suspect");
+        songs.add("Why Are Sundays So Depressing - The Strokes");
+        songs.add("My Honest Face - Inhaler");
+        songs.add("Safari Song - Greta Van Fleet");
+        songs.add("Down the Road - Dirty Honey");
+
+        // Print the list of really awesome songs
+        System.out.println("Awesome Songs");
+        System.out.println("---------");
+        songs.print();
+
+        // Make sure remove is removing
+        songs.remove("My Honest Face - Inhaler");
+        songs.remove("Particles - Nothing But Thieves");
+        songs.remove("Down the Road - Dirty Honey");
+
+        System.out.println("Updated Awesome Songs");
+        System.out.println("---------");
+        songs.print();
+    }
+
+    public void testMyStack() {
+        // Create a stack of words that rhyme with stack
+        Stack rhymes = new Stack();
+
+        // Validate stack is empty
+        if (rhymes.isEmpty()) {
+            System.out.println("Your stack is empty.");
+        }
+
+        // Add some rhymes
+        rhymes.push("Rack");
+        rhymes.push("Slack");
+        rhymes.push("Whack");
+        rhymes.push("Snack");
+        rhymes.push("Quack");
+        rhymes.push("Hack");
+        rhymes.push(("Soundtrack"));
+
+        // Print da rhymes
+        System.out.println("Rhymes 1");
+        System.out.println("---------");
+        rhymes.print();
+
+        // Make sure pop() is poppin...
+        System.out.println("\nPop() Test:");
+        System.out.println("---------");
+
+        Stack rhymes_2 = new Stack();
+        int length = rhymes.getLength();
+
+        for (int i=0; i<length; i++) {
+            // Pop and print
+            Node x = rhymes.pop();
+            System.out.println(x.toString());
+
+            // Push to new stack, order is now flipped
+            rhymes_2.push(x.getName());
+        }
+
+        // Print rhymes again, in reverse order
+        System.out.println("\nRhymes 2");
+        System.out.println("---------");
+        rhymes_2.print();
+    }
+
+    public void testMyQueue() {
+        // Create a queue of people waiting to checkout at Stop & Shop
+        Queue checkout = new Queue();
+
+        // Add the peeps
+        checkout.enqueue("Karen");
+        checkout.enqueue("Evan");
+        checkout.enqueue("David");
+        checkout.enqueue("Marco");
+        checkout.enqueue("Shannon");
+        checkout.enqueue("Dan");
+        checkout.enqueue("Alan");
+
+        System.out.println("Checkout:");
+        System.out.println("---------");
+        checkout.print();
+
+        // Karen is now being helped
+        Node karen = checkout.dequeue();
+        System.out.println("Checkout:");
+        System.out.println("---------");
+        checkout.print();
+
+        // Karen, in Karen fashion, made a scene asking for a manager...
+        Queue customerService = new Queue();
+        customerService.enqueue(karen.getName());
+        System.out.println("Customer Service:");
+        System.out.println("---------");
+        customerService.print();
+
+        // Alan is now next in line
+        int length = checkout.getLength();
+        for (int i=0; i<length-1; i++) {
+            Node customer = checkout.dequeue();
+        }
+        System.out.println("Checkout:");
+        System.out.println("---------");
+        checkout.print();
+
+        // Karen was told to get back on the checkout line
+        // She tried to cut Alan but he didn't fall for her tricks
+        checkout.enqueue(karen.getName());
+        System.out.println("Checkout:");
+        System.out.println("---------");
+        checkout.print();
+
+        // Finally they all go home
+        length = checkout.getLength();
+        for (int i=0; i<length; i++) {
+            Node customer = checkout.dequeue();
+        }
+
+        System.out.println("Checkout:");
+        System.out.println("---------");
+        if (checkout.isEmpty()) {
+            System.out.println("The checkout line is empty.");
+        }
+    }
+
+    public void checkPalindrome() {
+        // magicitems.txt
+        String[] items = new String[666];
+
+        // palindromes.txt
+        // String[] items = new String[13];
+
+        LinkedList palindromes = new LinkedList();
+        Stack stack = new Stack();
+        Queue queue = new Queue();
+        int i = 0;
+        
+        try {
+            File file = new File("magicitems.txt");
+            // File file = new File("palindromes.txt");
+            Scanner myReader = new Scanner(file);
+
+            while (myReader.hasNextLine()) {
+            String data = myReader.nextLine();
+            items[i] = data;
+            i++;
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+        for (int w=0; w<items.length; w++) {
+            // Normally I'd initialize this to false, but it seems to make more sense to look for all the words that aren't palindromes.
+            // A non-palindrome and palindrome can both have matching characters on opposing ends of the string.
+            // A palindrome will never have mismatching characters, a non-palindrome will.
+            boolean isPalindrome = true;
+
+            // Remove all whitespace and symbols
+            items[w] = items[w].replaceAll("[\\s,\\.'\\(\\)+-]", "");
+
+            // Convert to all lower case
+            items[w] = items[w].toLowerCase();
+
+            for (int j=0; j<items[w].length(); j++) {
+                // Loop through all the character in the string 
+                // and add each character to a stack and queue, respectively
+                stack.push(String.valueOf(items[w].charAt(j)));
+                queue.enqueue(String.valueOf(items[w].charAt(j)));
+            }
+
+            int length = stack.getLength();
+            for (int c=0; c<length; c++) {
+                // Pop and dequeue each letter
+                String char1 = stack.pop().getName();
+                String char2 = queue.dequeue().getName();
+
+                if (!(char1.equals(char2))) {
+                    // A word cannot be a palindrome if both chars are not the same
+                    isPalindrome = false;
+                }
+            }
+            if (isPalindrome) {
+                // Add all palindromes to a separate list
+                palindromes.add(items[w]);
+            }
+        }
+        palindromes.print();
+    }
+}
+\end{minted}
+
+\subsection{Main Class}
+The Main class creates an instance of the Test class and calls each testing method.
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class Assignment_1 {
+    public static void main(String[] args) {
+        
+        Test test = new Test();
+
+        // Test each of the data structures
+        test.testMyLinkedList();
+        test.testMyStack();
+        test.testMyQueue();
+
+        // Check for palindromes
+        test.checkPalindrome();
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Main and Test
+%----------------------------------------------------------------------------------------
+
+\end{document}

@@ -11,11 +11,16 @@ class Test {
      *      testMyLinkedList()
      *      testMyStack()
      *      testMyQueue()
-     *      checkPalindromes()
+     *      checkPalindrome()
      */
     public void testMyLinkedList() {
         // Create a linked list of really awesome songs
         LinkedList songs = new LinkedList();
+
+        // Validate the list is empty
+        if (songs.isEmpty()) {
+            System.out.println("Your list is empty.");
+        }
 
         // Add some really awesome songs
         songs.add("Particles - Nothing But Thieves");
@@ -27,12 +32,28 @@ class Test {
         songs.add("Down the Road - Dirty Honey");
 
         // Print the list of really awesome songs
+        System.out.println("Awesome Songs");
+        System.out.println("---------");
+        songs.print();
+
+        // Make sure remove is removing
+        songs.remove("My Honest Face - Inhaler");
+        songs.remove("Particles - Nothing But Thieves");
+        songs.remove("Down the Road - Dirty Honey");
+
+        System.out.println("Updated Awesome Songs");
+        System.out.println("---------");
         songs.print();
     }
 
     public void testMyStack() {
         // Create a stack of words that rhyme with stack
         Stack rhymes = new Stack();
+
+        // Validate stack is empty
+        if (rhymes.isEmpty()) {
+            System.out.println("Your stack is empty.");
+        }
 
         // Add some rhymes
         rhymes.push("Rack");

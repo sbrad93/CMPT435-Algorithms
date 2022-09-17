@@ -7,7 +7,7 @@ class Node {
     public Node(String name) {
         this.name = name;
         this.next = null;
-    }
+    } // Node
 
     /* Getters and Setters */
     public String getName() {
