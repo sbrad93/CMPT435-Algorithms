@@ -9,9 +9,10 @@ class Assignment_2 {
 
     public static void main(String[] args) {
 
+        // Get magic items from the input file
         File file = new File("magicitems.txt");
         Scanner myReader = null;
-        String[] items = null;
+        String[] magicItems = null;
         int i = 0;
         int numLines = 0;
         
@@ -25,13 +26,13 @@ class Assignment_2 {
             myReader.close();
 
             // create magic items array
-            items = new String[numLines];
+            magicItems = new String[numLines];
 
             myReader = new Scanner(file);
             while (myReader.hasNextLine()) {
                 // initialize magic items array with magic items
                 String data = myReader.nextLine();
-                items[i] = data;
+                magicItems[i] = data.toLowerCase();
                 i++;
             }
             myReader.close();
@@ -39,18 +40,46 @@ class Assignment_2 {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
+
+// ---------------------------------------------------------------------
+
+        // 1. Selection Sort
+        shuffle(magicItems);
+        SelectionSort ssObj = new SelectionSort();
+        ssObj.sort(magicItems);
+        // ssObj.print(magicItems);
+        // ssObj.printNumComparisons();
+
+        // 2. Insertion Sort
+        shuffle(magicItems);
+        InsertionSort isObj = new InsertionSort();
+        isObj.sort(magicItems);
+        // isObj.print(magicItems);
+        // isObj.printNumComparisons();
+
+        // 3. Merge Sort
+        shuffle(magicItems);
+        MergeSort msObj = new MergeSort();
+        msObj.sort(magicItems, 0, magicItems.length-1);
+        msObj.print(magicItems);
+        msObj.printNumComparisons();
+
+        // 4. Quicksort
+        shuffle(magicItems);
+        QuickSort qsObj = new QuickSort();
+
     }
 
-    public static void shuffle(String[] magicItems) {
+    public static void shuffle(String[] array) {
         int n = 0; // number of shuffled elements
-        while (n < magicItems.length-1) {
+        while (n < array.length-1) {
             n++;
             int randIndex = randomGen.nextInt(n); // select a random index value
 
             // swap the next array element with a random element
-            String temp = magicItems[n];
-            magicItems[n] = magicItems[randIndex];
-            magicItems[randIndex] = temp;
+            String temp = array[n];
+            array[n] = array[randIndex];
+            array[randIndex] = temp;
         }
     }
 }
