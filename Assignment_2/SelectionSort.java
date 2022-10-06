@@ -9,7 +9,7 @@ class SelectionSort {
         // final element will already be in correct position
         for (int i=0; i<n-2; i++) {
             minIndex = i;
-            for (int j=i+1; j<n-1; j++) {
+            for (int j=i+1; j<n; j++) {
                 // find the index of the 'smallest' element
                 if (array[j].compareTo(array[minIndex]) < 0) {
                     minIndex = j;

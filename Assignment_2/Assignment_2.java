@@ -48,28 +48,28 @@ class Assignment_2 {
         SelectionSort ssObj = new SelectionSort();
         ssObj.sort(magicItems);
         // ssObj.print(magicItems);
-        // ssObj.printNumComparisons();
+        ssObj.printNumComparisons();
 
         // 2. Insertion Sort
         shuffle(magicItems);
         InsertionSort isObj = new InsertionSort();
         isObj.sort(magicItems);
         // isObj.print(magicItems);
-        // isObj.printNumComparisons();
+        isObj.printNumComparisons();
 
         // 3. Merge Sort
         shuffle(magicItems);
         MergeSort msObj = new MergeSort();
         msObj.sort(magicItems, 0, magicItems.length-1);
         // msObj.print(magicItems);
-        // msObj.printNumComparisons();
+        msObj.printNumComparisons();
 
         // 4. Quicksort
         shuffle(magicItems);
         QuickSort qsObj = new QuickSort();
         qsObj.sort(magicItems, 0, magicItems.length-1);
-        qsObj.print(magicItems);
-        qsObj.printNumComparisons();;
+        // qsObj.print(magicItems);
+        qsObj.printNumComparisons();
     }
 
     public static void shuffle(String[] array) {

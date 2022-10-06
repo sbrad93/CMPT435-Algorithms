@@ -43,7 +43,7 @@ class MergeSort {
             }
             numComparisons++;
         }
-        // copy remaining elements for both halves of array (if any)
+        // include remaining elements
         while (i < left.length) {
             array[k++] = left[i++];
         }
