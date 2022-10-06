@@ -61,13 +61,15 @@ class Assignment_2 {
         shuffle(magicItems);
         MergeSort msObj = new MergeSort();
         msObj.sort(magicItems, 0, magicItems.length-1);
-        msObj.print(magicItems);
-        msObj.printNumComparisons();
+        // msObj.print(magicItems);
+        // msObj.printNumComparisons();
 
         // 4. Quicksort
         shuffle(magicItems);
         QuickSort qsObj = new QuickSort();
-
+        qsObj.sort(magicItems, 0, magicItems.length-1);
+        qsObj.print(magicItems);
+        qsObj.printNumComparisons();;
     }
 
     public static void shuffle(String[] array) {
