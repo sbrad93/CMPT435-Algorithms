@@ -1,0 +1,534 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CMPT 435
+% Fall 2022
+% Assignment 2
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from: http://www.LaTeXTemplates.com
+% Original author: % Frits Wenneker (http://www.howtotex.com)
+% License: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% Modified by Alan G. Labouseur  - alan@labouseur.com
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[letterpaper, 10pt,DIV=13]{scrartcl} 
+\usepackage{minted}
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm,xfrac} % Math packages
+\usepackage{sectsty} % Allows customizing section commands
+\usepackage{graphicx}
+\usepackage[lined,linesnumbered,commentsnumbered]{algorithm2e}
+\usepackage{listings}
+\usepackage{parskip}
+\usepackage{lastpage}
+
+\allsectionsfont{\normalfont\scshape} % Make all section titles in default font and small caps.
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{page \thepage\ of \pageref{LastPage}} % Page numbering for right footer
+
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs.
+
+\binoppenalty=3000
+\relpenalty=3000
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+   \normalfont \normalsize 
+   \textsc{CMPT 435 - Fall 2022 - Dr. Labouseur} \\[10pt] % Header stuff.
+   \horrule{0.5pt} \\[0.25cm] 	     % Top horizontal rule
+   \huge Assignment Two  \\     	 % Assignment title
+   \horrule{0.5pt} \\[0.25cm] 	     % Bottom horizontal rule
+}
+
+\author{Shannon Brady \\ \normalsize shannon.brady2@Marist.edu}
+
+\date{\normalsize\today} 	% Today's date.
+
+\begin{document}
+\maketitle % Print the title
+
+%----------------------------------------------------------------------------------------
+%   start Selection Sort
+%----------------------------------------------------------------------------------------
+\section{Selection Sort}
+\begin{enumerate}
+    \item Line 10: Traverse the array of unsorted elements (of size n) from 0 to n-2. 
+    \begin{enumerate}
+        \item The final element does not need to be traversed, given that it will already be in the correct position following the final comparison and swap.
+    \end{enumerate}
+    \item Line 12-17: Look for the smallest element in the array by comparing all elements to array[i]. If there is a value less than array[i], take note of the index and increment the number of comparison.
+    \item Line 20-22: Swap the element at minIndex with array[i], regardless if a new minIndex is found. The next iteration of the outer for loop begins and the cycle is repeated accordingly. 
+    \item Line 26: print --> method that prints sorted array to terminal
+    \item Line 32: printNumComparisons --> method that prints total number of comparisons to terminal
+    \item Running time analysis: The running time of Selection Sort is $O(n^2)$. This is due to the fact that for every iteration of the outer for loop, which must run roughly n times, there are n iterations within the inner loop. Since constant factors and O(1) statements are negligible, this algorithm maintains a $O(n^2)$ time complexity.
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class SelectionSort {
+
+    int numComparisons = 0;
+
+    public void sort(String[] array) {
+        int n = array.length;
+        int minIndex = 0;
+
+        // no need to traverse entire array
+        // final element will already be in correct position
+        for (int i=0; i<n-2; i++) {
+            minIndex = i;
+            for (int j=i+1; j<n; j++) {
+                // find the index of the 'smallest' element
+                if (array[j].compareTo(array[minIndex]) < 0) {
+                    minIndex = j;
+                }
+                numComparisons++;
+            }
+            // swap smallest element with the current element
+            String temp = array[minIndex];
+            array[minIndex] = array[i];
+            array[i] = temp;
+        }
+    }
+
+    public void print(String[] array) {
+        for (int i=0; i<array.length; i++) {
+            System.out.println(array[i]);
+        }
+    }
+
+    public void printNumComparisons() {
+        System.out.println("\nSelection Sort\nNumber of Comparisons: " + numComparisons);
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Selection Sort
+%----------------------------------------------------------------------------------------
+
+
+%----------------------------------------------------------------------------------------
+%   start Insertion Sort
+%----------------------------------------------------------------------------------------
+\section{Insertion Sort}
+\begin{enumerate}
+    \item Line 8: Traverse the unsorted array of size n from array[1] to array[n]. Track the current element and the index of the previous element.
+    \item Line 13-17: Compare the current element to its predecessor. Increment the predecessor index until the current element is no longer less than the elements before. Increment the number of comparisons accordingly.
+    \item Line 20: Move the greater element one position forward to allow room for the swapped element.
+    \item Line 24: print --> method that prints sorted array to terminal
+    \item Line 30: printNumComparisons --> method that prints total number of comparisons to terminal
+    \item Running time analysis: Insertion Sort has a running time complexity of $O(n^2)$, given that for every element within the array, there can potentially be n number of swaps. Worst-case scenario would be if the array was in reverse order, as this would require every possible loop iteration. Conversely, if the array was already sorted, traversal of the inner loop wouldn't be necessary, resulting in order of n time.
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class InsertionSort {
+
+    int numComparisons = 0;
+
+    public void sort(String[] array) {
+        int n = array.length;
+
+        for (int i=1; i<n; i++) {
+            String currElement= array[i];
+            int j = i-1;
+
+            // compare the current element to the previous element
+            while (j>= 0 && array[j].compareTo(currElement) > 0) {
+                // keep comparing until current element is no longer less than elements before
+                array[j+1] = array[j];
+                j = j-1;
+                numComparisons++;
+            }
+            // move greater elements one index forward
+            array[j+1] = currElement;
+        }
+    }
+
+    public void print(String[] array) {
+        for (int i=0; i<array.length; i++) {
+            System.out.println(array[i]);
+        }
+    }
+
+    public void printNumComparisons() {
+        System.out.println("\nInsertion Sort\nNumber of Comparisons: " + numComparisons);
+    }
+
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Insertion Sort
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%   start Merge Sort
+%----------------------------------------------------------------------------------------
+\section{Merge Sort}
+\begin{enumerate}
+    \item Line 8: Find the midpoint index of the unsorted array.
+    \item Line 11-12: Given that Merge Sort implements the divide and conquer problem solving methodology, the sort function must be called recursively to sort the entire array.
+    \begin{enumerate}
+        \item This represents the divide portion of the algorithm. The unsorted array will be split into smaller unsorted sub-arrays until each sub-array contains only one item, which is effectively "sorted". 
+    \end{enumerate}
+    \item Line 15-22: Create and initialize two separate arrays, one for all elements to the left of the midpoint and one for all elements to the right of the midpoint.
+    \item Lint 25: Call the merge function to combine the left and right sub-arrays.
+    \item Line 31-35: Keep track of index values for the left array, right array, and the entire array.
+    \item Line 37-44: If the left[i] is less than right[j], add left[i] to the merged array and increment the merged array index and the left index. Otherwise, add right[j] to the merged array and increment the indices accordingly. Increment the number of comparisons.
+    \item Line 47-52: Add all remaining elements to the merged array, if there are any.
+    \item Line 55: print --> method that prints sorted array to terminal
+    \item Line 61: printNumComparisons --> method that prints total number of comparisons to terminal
+    \item Running time analysis: Merge sort has a time complexity of $O(nlogn)$, which can be expressed by the following recurrence relation: $T(n) = 2T(n/2) + O(n)$. The logn ($2T(n/2)$ portion represents the divide portion of the algorithm, where each sub-array is divided in half recursively. The n portion represents the conquer portion. Since merging each sub-array ultimately results in traversing through the entire original array of n items, this takes n order of time.
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class MergeSort {
+
+    int numComparisons = 0;
+
+    public void sort(String[] array, int start, int end) {
+        if (start < end) {
+            // find midpoint
+            int mid = start+(end-start)/2;
+ 
+            // sort first and second halves
+            sort(array, start, mid);
+            sort(array, mid + 1, end);
+
+            // create arrays for elements on either side of midpoint
+            String[] left = new String[mid-start+1];
+            String[] right = new String[end-mid];
+    
+            // initialize data in temp arrays
+            for (int i = 0; i < left.length; ++i)
+                left[i] = array[start + i];
+            for (int j = 0; j < right.length; ++j)
+                right[j] = array[mid + 1 + j];
+ 
+            // merge the sorted halves
+            merge(array, start, left, right);
+        }
+    }
+
+    public void merge(String[] array, int start, String[] left, String[] right) {
+        // index for first half of array
+        int i = 0;
+        // index for second half of array
+        int j = 0;
+        // initial index of merged subarray
+        int k = start;
+
+        while (i < left.length && j < right.length) {
+            if (left[i].compareTo(right[j]) <= 0) {
+                array[k++] = left[i++];
+            }
+            else {
+                array[k++] = right[j++];
+            }
+            numComparisons++;
+        }
+        // include remaining elements
+        while (i < left.length) {
+            array[k++] = left[i++];
+        }
+        while (j < right.length) {
+            array[k++] = right[j++];
+        }
+    }
+ 
+    public void print(String[] array) {
+        for (int i = 0; i < array.length; ++i) {
+            System.out.println(array[i]);
+        }
+    }
+
+    public void printNumComparisons() {
+        System.out.println("\nMerge Sort\nNumber of Comparisons: " + numComparisons);
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Merge Sort
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%   start Quicksort
+%----------------------------------------------------------------------------------------
+\section{QuickSort}
+\begin{enumerate}
+    \item Line 7-13: The sort method is the driver method of this Quicksort implementation. After finding a pivot index, the array is then recursively sorted on either side of the value.
+    \item Line 21, Line 40-51: Set a random pivot value by getting three random index values between the start and end indexes and find the median. Swap the element at the pivot index with the element at the end index (Line 54-59).
+    \item Line 22: Initialize the pivot element, which is now at the end of the array.
+    \item Line 25: Keep track of the smaller element
+    \item Line 27-34: Looping from start to end, swap the smaller element with the current element anytime array[j] is less than the pivot. Increment the number of comparisons.
+    \item Swap the end element (the pivot) with the next element and return that index.
+    \item Line 61: print --> method that prints sorted array to terminal
+    \item Line 67: printNumComparisons --> method that prints total number of comparisons to terminal
+    \item Running time analysis: The expected or average running time of Quicksort is $O(nlogn)$, which can be expressed by the following recurrence relation: $T(n) = 2T(n/2) + O(n)$. Though Merge Sort and Quicksort both implement divide and conquer, Quicksort combines the divide and conquer portions into one consilidated process, whereas Merge Sort separates them. In worst-case scenarios, the pivot element would either be the first or last element in the array, which can lead to $O(n^2)$ time complexity. This implementation of Quicksort essentially finds a random pivot element that is likely to be closer to the center of the array. This serves to limit the number of comparisons and maintain average running time.
+    
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+import java.util.Random;
+
+class QuickSort {
+
+    int numComparisons = 0;
+
+    public void sort(String[] array, int start, int end) { 
+        if (start < end) { 
+            int partitionIndex = partition(array, start, end);  
+            sort(array, start, partitionIndex-1); 
+            sort(array, partitionIndex+1, end); 
+        } 
+    }
+
+    int partition(String[] array, int start, int end) { 
+        // places pivot in correct postion,
+        // all smaller elements to the left,
+        // and all greater elements to the right
+
+        // this function places the pivot (the median of three random values) at the end of the array
+        setRandomPivot(array, start, end);
+        String pivot = array[end]; 
+      
+        // index of string that's 'smaller' (closer to top of alphabet)
+        int i = start-1;
+
+        for (int j=start; j<end; j++) { 
+            // current element is smaller than pivot
+            if (array[j].compareTo(pivot) < 0) { 
+                i++; 
+                swap(array, i, j);
+                numComparisons++;
+            } 
+        } 
+        // end is the pivot index
+        swap(array, i+1, end);
+        return i+1; 
+    } 
+
+    public void setRandomPivot(String[] array, int start, int end) { 
+        // find three random index values between start and end
+        Random rand= new Random(); 
+        int rand1 = rand.nextInt(end-start)+start;
+        int rand2 = rand.nextInt(end-start)+start;
+        int rand3 = rand.nextInt(end-start)+start;
+
+        // calculate the median of the three values
+        // https://stackoverflow.com/questions/1582356/fastest-way-of-finding-the-middle-value-of-a-triple
+        int pivot = Math.max(Math.min(rand1, rand2), Math.min(Math.max(rand1, rand2), rand3));
+          
+        swap(array, pivot, end);
+    }
+
+    public void swap(String[] array, int x, int y) {
+        // swaps two elements in an array
+        String temp = array[x];
+        array[x] = array[y];
+        array[y] = temp;
+    }
+
+    public void print(String[] array) {
+        for (int i = 0; i < array.length; ++i) {
+            System.out.println(array[i]);
+        }
+    }
+
+    public void printNumComparisons() {
+        System.out.println("\nQuicksort\nNumber of Comparisons: " + numComparisons);
+    } 
+}
+\end{minted}
+
+\subsection{Main Class and Results}
+\begin{enumerate}
+    \item Line 12-24: Initialize an array with all 666 magic items.
+    \item Line 75-86: shuffle --> A $O(n)$ shuffle routine based on the Knuth shuffle.
+    \item Line 47-51: Test Selection Sort
+    \item Line 54-58: Test Insertion Sort
+    \item Line 61-65: Test Merge Sort
+    \item Line 68-72: Test Quicksort
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Random;
+import java.util.Scanner;
+
+class Assignment_2 {
+
+    public static Random randomGen = new Random();
+
+    public static void main(String[] args) {
+
+        // Get magic items from the input file
+        File file = new File("magicitems.txt");
+        Scanner myReader = null;
+        String[] magicItems = null;
+        int i = 0;
+        int numLines = 0;
+        
+        try {
+            myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                // count the number of lines in the file
+                numLines++;
+                myReader.nextLine();
+            }
+            myReader.close();
+
+            // create magic items array
+            magicItems = new String[numLines];
+
+            myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                // initialize magic items array with magic items
+                String data = myReader.nextLine();
+                magicItems[i] = data.toLowerCase();
+                i++;
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+// ---------------------------------------------------------------------
+
+        // 1. Selection Sort
+        shuffle(magicItems);
+        SelectionSort ssObj = new SelectionSort();
+        ssObj.sort(magicItems);
+        // ssObj.print(magicItems);
+        ssObj.printNumComparisons();
+
+        // 2. Insertion Sort
+        shuffle(magicItems);
+        InsertionSort isObj = new InsertionSort();
+        isObj.sort(magicItems);
+        // isObj.print(magicItems);
+        isObj.printNumComparisons();
+
+        // 3. Merge Sort
+        shuffle(magicItems);
+        MergeSort msObj = new MergeSort();
+        msObj.sort(magicItems, 0, magicItems.length-1);
+        // msObj.print(magicItems);
+        msObj.printNumComparisons();
+
+        // 4. Quicksort
+        shuffle(magicItems);
+        QuickSort qsObj = new QuickSort();
+        qsObj.sort(magicItems, 0, magicItems.length-1);
+        // qsObj.print(magicItems);
+        qsObj.printNumComparisons();
+    }
+
+    public static void shuffle(String[] array) {
+        int n = 0; // number of shuffled elements
+        while (n < array.length-1) {
+            n++;
+            int randIndex = randomGen.nextInt(n); // select a random index value
+
+            // swap the next array element with a random element
+            String temp = array[n];
+            array[n] = array[randIndex];
+            array[randIndex] = temp;
+        }
+    }
+}
+\end{minted}
+
+\subsection{Results}
+
+\begin{center}
+\begin{tabular}{||c c||} 
+ \hline
+ Algorithm & Number of Comparisons\\ [0.5ex] 
+ \hline\hline
+ Selection Sort & 221444  \\ 
+ \hline
+ Insertion Sort & 110864 \\
+ \hline
+ Merge Sort & 5436 \\
+ \hline
+ Quicksort & 4077 \\
+ \hline
+\end{tabular}
+\end{center}
+%----------------------------------------------------------------------------------------
+%   end Main
+%----------------------------------------------------------------------------------------
+\end{document}
