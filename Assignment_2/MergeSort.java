@@ -14,13 +14,21 @@ class MergeSort {
             // create arrays for elements on either side of midpoint
             String[] left = new String[mid-start+1];
             String[] right = new String[end-mid];
-    
-            // initialize data in temp arrays
-            for (int i = 0; i < left.length; ++i)
+
+            // left index
+            int i=0;
+            // right index
+            int j=0;
+            // initialize arrays to be merged
+            while (i<left.length) {
                 left[i] = array[start + i];
-            for (int j = 0; j < right.length; ++j)
-                right[j] = array[mid + 1 + j];
- 
+                i++;
+            }
+            while (j<right.length) {
+                right[j] = array[mid + j + 1];
+                j++;
+            }
+                
             // merge the sorted halves
             merge(array, start, left, right);
         }
@@ -34,11 +42,10 @@ class MergeSort {
         // initial index of merged subarray
         int k = start;
 
-        while (i < left.length && j < right.length) {
-            if (left[i].compareTo(right[j]) <= 0) {
+        while (i<left.length && j<right.length) {
+            if (left[i].compareTo(right[j]) < 0) {
                 array[k++] = left[i++];
-            }
-            else {
+            } else {
                 array[k++] = right[j++];
             }
             numComparisons++;

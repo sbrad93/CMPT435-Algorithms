@@ -217,13 +217,13 @@ class InsertionSort {
     \begin{enumerate}
         \item This represents the divide portion of the algorithm. The unsorted array will be split into smaller unsorted sub-arrays until each sub-array contains only one item, which is effectively "sorted". 
     \end{enumerate}
-    \item Line 15-22: Create and initialize two separate arrays, one for all elements to the left of the midpoint and one for all elements to the right of the midpoint.
-    \item Lint 25: Call the merge function to combine the left and right sub-arrays.
-    \item Line 31-35: Keep track of index values for the left array, right array, and the entire array.
-    \item Line 37-44: If the left[i] is less than right[j], add left[i] to the merged array and increment the merged array index and the left index. Otherwise, add right[j] to the merged array and increment the indices accordingly. Increment the number of comparisons.
-    \item Line 47-52: Add all remaining elements to the merged array, if there are any.
-    \item Line 55: print --> method that prints sorted array to terminal
-    \item Line 61: printNumComparisons --> method that prints total number of comparisons to terminal
+    \item Line 15-29: Create and initialize two separate arrays, one for all elements to the left of the midpoint and one for all elements to the right of the midpoint.
+    \item Line 33: Call the merge function to combine the left and right sub-arrays.
+    \item Line 39-43: Keep track of index values for the left array, right array, and the entire array.
+    \item Line 45-51: If the left[i] is less than right[j], add left[i] to the merged array and increment the merged array index and the left index. Otherwise, add right[j] to the merged array and increment the indices accordingly. Increment the number of comparisons.
+    \item Line 54592: Add all remaining elements to the merged array, if there are any.
+    \item Line 62: print --> method that prints sorted array to terminal
+    \item Line 68: printNumComparisons --> method that prints total number of comparisons to terminal
     \item Running time analysis: Merge sort has a time complexity of $O(nlogn)$, which can be expressed by the following recurrence relation: $T(n) = 2T(n/2) + O(n)$. The logn ($2T(n/2)$ portion represents the divide portion of the algorithm, where each sub-array is divided in half recursively. The n portion represents the conquer portion. Since merging each sub-array ultimately results in traversing through the entire original array of n items, this takes n order of time.
 \end{enumerate}
 
@@ -252,13 +252,21 @@ class MergeSort {
             // create arrays for elements on either side of midpoint
             String[] left = new String[mid-start+1];
             String[] right = new String[end-mid];
-    
-            // initialize data in temp arrays
-            for (int i = 0; i < left.length; ++i)
+
+            // left index
+            int i=0;
+            // right index
+            int j=0;
+            // initialize arrays to be merged
+            while (i<left.length) {
                 left[i] = array[start + i];
-            for (int j = 0; j < right.length; ++j)
+                i++;
+            }
+            while (j<right.length) {
                 right[j] = array[mid + 1 + j];
- 
+                j++;
+            }
+                
             // merge the sorted halves
             merge(array, start, left, right);
         }
@@ -272,11 +280,10 @@ class MergeSort {
         // initial index of merged subarray
         int k = start;
 
-        while (i < left.length && j < right.length) {
-            if (left[i].compareTo(right[j]) <= 0) {
+        while (i<left.length && j<right.length) {
+            if (left[i].compareTo(right[j]) < 0) {
                 array[k++] = left[i++];
-            }
-            else {
+            } else {
                 array[k++] = right[j++];
             }
             numComparisons++;
