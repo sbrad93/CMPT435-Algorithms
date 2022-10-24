@@ -1,21 +1,21 @@
 class LinearSearch {
 
     int numComparisons = 0;
-    int comparisonTotal = 0;
+    double comparisonTotal = 0;
 
     LinearSearch(){
         this.numComparisons = 0;
         this.comparisonTotal = 0;
     }
 
-    public int search(String[] array, String search) {
+    public int search(String[] array, String target) {
         this.numComparisons = 0;
         int i = 0;
         int foundIndex = -1;
 
         while (i < array.length) {
             // Loop through entire array until search is found
-            if (array[i].compareTo(search.toLowerCase()) == 0) {
+            if (array[i].compareTo(target.toLowerCase()) == 0) {
                 foundIndex = i;
                 // System.out.println(foundIndex + " " + search);
                 break;
@@ -35,6 +35,6 @@ class LinearSearch {
 
     // Print the average number of comparisons after a certain number of searches
     public void printAvgComparison(int total) {
-        System.out.println("\nLinear Search\nAverage Number of Comparisons: " + this.comparisonTotal/total);
+        System.out.printf("\nLinear Search\nAverage Number of Comparisons:  %.2f %n", this.comparisonTotal/total);
     }
 }

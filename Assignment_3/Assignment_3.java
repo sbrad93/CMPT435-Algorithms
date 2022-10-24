@@ -3,6 +3,8 @@ import java.io.FileNotFoundException;
 import java.util.Random;
 import java.util.Scanner;
 
+import javax.naming.BinaryRefAddr;
+
 class Assignment_3 {
 
     public static Random randomGen = new Random();
@@ -41,6 +43,10 @@ class Assignment_3 {
             e.printStackTrace();
         }
 
+        // Sort the magic items
+        InsertionSort sortObj = new InsertionSort();
+        sortObj.sort(magicItems);
+
         // Get 42 random magic items
         String[] randItems = getRandomElements(magicItems);
 
@@ -48,14 +54,30 @@ class Assignment_3 {
         LinearSearch linearSearchObj = new LinearSearch();
         for (int j=0; j<randItems.length; j++) {
             linearSearchObj.search(magicItems, randItems[j]);
-            System.out.print("\n" + j + ": ");
-            linearSearchObj.printNumComparisons();
+
+            // Print individual number of comparisons
+            // System.out.print("\n" + j + ": ");
+            // linearSearchObj.printNumComparisons();
         }
-        linearSearchObj.printAvgComparison(randItems.length);
+        // Print average number of comparisons
+        // linearSearchObj.printAvgComparison(randItems.length);
 
-        // InsertionSort sortObj = new InsertionSort();
-        // sortObj.sort(magicItems);
+        BinarySearch binarySearchObj = new BinarySearch();
+        for (int j=0; j<randItems.length; j++) {
+            // Reset the number of comparisons each time new seach begins
+            binarySearchObj.numComparisons = 0;
 
+            binarySearchObj.search(magicItems, randItems[j], 0, magicItems.length);
+
+            // Keep track of total number of comparisons for all searches in order to find average later
+            binarySearchObj.comparisonTotal += binarySearchObj.numComparisons;
+
+            // Print individual number of comparisons
+            System.out.print("\n" + j + ": ");
+            binarySearchObj.printNumComparisons();
+        }
+        // Print average number of comparisons
+        binarySearchObj.printAvgComparison(randItems.length);
     }
 
     public static String[] getRandomElements(String[] array) {
