@@ -30,11 +30,11 @@ class LinearSearch {
 
     // Print the number of comparisons for each search
     public void printNumComparisons() {
-        System.out.println("\nLinear Search\nNumber of Comparisons: " + this.numComparisons);
+        System.out.println("\nNumber of Comparisons: " + this.numComparisons);
     }
 
     // Print the average number of comparisons after a certain number of searches
     public void printAvgComparison(int total) {
-        System.out.printf("\nLinear Search\nAverage Number of Comparisons:  %.2f %n", this.comparisonTotal/total);
+        System.out.printf("\nAverage Number of Comparisons:  %.2f %n", this.comparisonTotal/total);
     }
 }

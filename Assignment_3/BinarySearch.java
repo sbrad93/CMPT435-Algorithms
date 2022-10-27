@@ -15,7 +15,7 @@ class BinarySearch {
 
         if (target.compareTo(array[midPoint]) == 0) {
             foundIndex = midPoint;
-            System.out.println(foundIndex + " " + target);
+            // System.out.println(foundIndex + " " + target);
         } else if (target.compareTo(array[midPoint]) < 0) {
             search(array, target, start, midPoint-1);
         } else {
@@ -27,11 +27,11 @@ class BinarySearch {
 
     // Print the number of comparisons for each search
     public void printNumComparisons() {
-        System.out.println("\nBinary Search\nNumber of Comparisons: " + this.numComparisons);
+        System.out.println("\nNumber of Comparisons: " + this.numComparisons);
     }
 
     // Print the average number of comparisons after a certain number of searches
     public void printAvgComparison(int total) {
-        System.out.printf("\nBinary Search\nAverage Number of Comparisons:  %.2f %n", this.comparisonTotal/total);
+        System.out.printf("\nAverage Number of Comparisons:  %.2f %n", this.comparisonTotal/total);
     }
 }
