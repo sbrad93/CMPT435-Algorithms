@@ -1,0 +1,560 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CMPT 435
+% Fall 2022
+% Assignment 3
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from: http://www.LaTeXTemplates.com
+% Original author: % Frits Wenneker (http://www.howtotex.com)
+% License: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% Modified by Alan G. Labouseur  - alan@labouseur.com
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[letterpaper, 10pt,DIV=13]{scrartcl} 
+\usepackage{minted}
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm,xfrac} % Math packages
+\usepackage{sectsty} % Allows customizing section commands
+\usepackage{graphicx}
+\usepackage[lined,linesnumbered,commentsnumbered]{algorithm2e}
+\usepackage{listings}
+\usepackage{parskip}
+\usepackage{lastpage}
+
+\allsectionsfont{\normalfont\scshape} % Make all section titles in default font and small caps.
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{page \thepage\ of \pageref{LastPage}} % Page numbering for right footer
+
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs.
+
+\binoppenalty=3000
+\relpenalty=3000
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+   \normalfont \normalsize 
+   \textsc{CMPT 435 - Fall 2022 - Dr. Labouseur} \\[10pt] % Header stuff.
+   \horrule{0.5pt} \\[0.25cm] 	     % Top horizontal rule
+   \huge Assignment Three  \\     	 % Assignment title
+   \horrule{0.5pt} \\[0.25cm] 	     % Bottom horizontal rule
+}
+
+\author{Shannon Brady \\ \normalsize shannon.brady2@Marist.edu}
+
+\date{\normalsize\today} 	% Today's date.
+
+\begin{document}
+\maketitle % Print the title
+
+%----------------------------------------------------------------------------------------
+%   start Linear Search
+%----------------------------------------------------------------------------------------
+\section{Linear Search}
+\begin{enumerate}
+    \item The Linear Search class has the following attributes:
+    \begin{enumerate}
+        \item numComparisons: The number of comparisons required to complete a single search
+        \item comparisonTotal: A provisional attribute used to track the total number of comparison over a certain number of searches. This is used to calculate the average number of comparisons. 
+    \end{enumerate}
+    \item Line 16-27: Traverse a given array. If the target element is found, assign the associated index to foundIndex and break. Increment the number of comparisons for each loop iteration. Return the index of the target element if found; otherwise, return -1.
+    \item Line 31-33: Print the number of comparisons for each completed search.
+    \item Line 36-38: Print the average number of comparisons after a given number of searches.
+    \item Running Time Analysis: The asymptotic running time of linear search is O(n), given that the worst-case scenario is the target element being the last element in the array. This scenario would required a complete traversal of an array of n elements. The expected running time is roughly O(n/2), since it is most likely that the target element does not exist at either extreme but rather somewhere closer to the midpoint. However, since constant factors are considered to be negligible, this would still be considered O(n) running time.
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class LinearSearch {
+
+    int numComparisons = 0;
+    double comparisonTotal = 0;
+
+    LinearSearch(){
+        this.numComparisons = 0;
+        this.comparisonTotal = 0;
+    }
+
+    public int search(String[] array, String target) {
+        this.numComparisons = 0;
+        int i = 0;
+        int foundIndex = -1;
+
+        while (i < array.length) {
+            // Loop through entire array until target element is found
+            if (array[i].compareTo(target.toLowerCase()) == 0) {
+                foundIndex = i;
+                break;
+            }
+            this.numComparisons++;
+            i++;
+        }
+        // Track the total number of comparisons to find an average later
+        this.comparisonTotal += this.numComparisons;
+        return foundIndex;
+    }
+
+    // Print the number of comparisons for each search
+    public void printNumComparisons() {
+        System.out.println("\nNumber of Comparisons: " + this.numComparisons);
+    }
+
+    // Print the average number of comparisons after a given number of searches
+    public void printAvgComparison(int total) {
+        System.out.printf("\nAverage Number of Comparisons:  %.2f %n", this.comparisonTotal/total);
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Linear Search
+%----------------------------------------------------------------------------------------
+
+
+%----------------------------------------------------------------------------------------
+%   start Binary Search
+%----------------------------------------------------------------------------------------
+\section{Binary Search}
+\begin{enumerate}
+    \item The Binary Search class has the following attributes:
+    \begin{enumerate}
+        \item numComparisons: The number of comparisons required to complete a single search
+        \item comparisonTotal: A provisional attribute used to track the total number of comparison over a certain number of searches. This is used to calculate the average number of comparisons. 
+    \end{enumerate}
+    \item Line 13: Find the midpoint index based on the given start and end values.
+    \item Line 14: Increment the number of comparisons for each initiated search.
+    \item Line 16-17: If the target element is equivalent to the element at the midpoint index, return the midpoint index.
+    \item Line 18-19: If the target element is lexicographically less than the element at the midpoint index, initiate another search from the start index to the index preceding the midpoint.
+    \item Line 20-21: Otherwise, initiate another search from the index following the midpoint index to the end index.
+    \item Line 23: Return the index of the target element if found; otherwise, return -1.
+    \item Line 27-29: Print the number of comparisons for each completed search.
+    \item Line 32-34: Print the average number of comparisons after a given number of searches.
+    \item Running Time Analysis: The asymptotic running time of binary search is $O(log_2n)$, given that with each recursive search call, half of the remaining elements are excluded as possible matches. Unlike linear search, binary search applies the methodology of divide and conquer, whereby the initial array is recursively split in half until a match is found or no additional splits can be made (n=1). 
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class BinarySearch {
+
+    int numComparisons = 0;
+    double comparisonTotal = 0;
+
+    BinarySearch(){
+        this.numComparisons = 0;
+        this.comparisonTotal = 0;
+    }
+
+    public int search(String[] array, String target, int start, int end) {
+        int foundIndex = -1;
+        int midPoint = (start+end)/2;
+        this.numComparisons++;
+
+        if (target.compareTo(array[midPoint]) == 0) {
+            foundIndex = midPoint;
+        } else if (target.compareTo(array[midPoint]) < 0) {
+            foundIndex = search(array, target, start, midPoint-1);
+        } else {
+            foundIndex = search(array, target, midPoint+1, end);
+        }
+        return foundIndex;
+    }
+
+    // Print the number of comparisons for each search
+    public void printNumComparisons() {
+        System.out.println("\nNumber of Comparisons: " + this.numComparisons);
+    }
+
+    // Print the average number of comparisons after a certain number of searches
+    public void printAvgComparison(int total) {
+        System.out.printf("\nAverage Number of Comparisons:  %.2f %n", this.comparisonTotal/total);
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Binary Search
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%   start Hash Table
+%----------------------------------------------------------------------------------------
+\section{Hash Table}
+\begin{enumerate}
+    \item The Hash Table class has the following attributes:
+        \begin{enumerate}
+            \item hashTable: The hash table itself; an array of linked lists
+            \item numComparisons: The number of comparisons required to complete a single search
+            \item comparisonTotal: A provisional attribute used to track the total number of comparison over a certain number of searches. This is used to calculate the average number of comparisons. 
+        \end{enumerate}
+    \item Line 13-20: Method for putting an element in the Hash Table
+    \begin{enumerate}
+        \item Line 14-16: Create a linked list for every key within the hash table to accommodate chaining.
+        \item Line 19: Add the given element to the front of the linked list for the specified key (see lines 12-25 in LinkedList.java).
+    \end{enumerate}
+    \item Line 22-41: Method for retrieving an element from the Hash Table.
+    \begin{enumerate}
+        \item Line 24-25: Number of comparisons is at least 1 each time 'get' is called.
+        \item Line 29-36: Traverse the Hash Table until the target element is found and then break. Increment number of comparisons each time a linked list element is traversed.
+        \item Line 39-40: Add the number of comparisons to the total number of comparisons. Return whether or not the element was found.
+    \end{enumerate}
+    \item Line 44-55: Method used to print the entire hash table.
+    \item Line 58-90: Method used to print the individual number of comparisons for each 'get'.
+    \item Line 63-65: Method used to print the average number of comparisons over a given number of 'get' calls.
+    \item Running Time Analysis: 
+    \begin{enumerate}
+        \item The asymptotic running time of each 'put' call is O(1). Given that in this implementation of a linked list new elements are added to the front of the list as opposed to the end of the list, any load factor considerations are negligible. 
+        \item The asymptotic running time of each 'get' call is O(1) + $\alpha$, where $\alpha$ is the load factor associated with chaining. The load factor refers to the ratio of the number of items in the hash table to the table's size, which in this case is 250. Since each element in contained within a linked list, the linked list must first be retrieved (in O(1) time), and then traversed ($\alpha$) to find the target element.
+    \end{enumerate}
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class HashTable {
+
+    LinkedList[] hashTable = null;
+    int numComparisons = 0;
+    double comparisonTotal = 0;
+
+    HashTable(int len) {
+        this.hashTable = new LinkedList[len];
+        this.numComparisons = 0;
+        this.comparisonTotal = 0;
+    }
+
+    public void put(int code, String element) {
+        if (this.hashTable[code] == null) {
+            // Create a new linked list if one doesn't exist for a given hashcode
+            this.hashTable[code] = new LinkedList();
+        } 
+        // Add element to the top of the linked list
+        this.hashTable[code].add(element);
+    }
+
+    public boolean get(int code, String element) {
+        // Initial 'get' is 1 comparison
+        this.numComparisons = 0;
+        this.numComparisons++;
+
+        boolean res = false;
+        int i = 0;
+        while (i<this.hashTable[code].getSize()) {
+            // Increment num comparisons every time another item in linked list is traversed
+            this.numComparisons++;
+            if (this.hashTable[code].getNode(i).getName().compareTo(element) == 0) {
+                res = true;
+                break;
+            }
+            i++;
+        }
+        // Keep track of total number of comparisons
+        this.comparisonTotal += this.numComparisons;
+        return res;
+    }
+
+    // Print the entire hash table
+    public void print() {
+        for (int i=0; i<hashTable.length; i++) {
+            if (hashTable[i] != null) {
+                System.out.println("Hash Code: " + i);
+                System.out.println("Contains elements: ");
+                for (int j=0; j<hashTable[i].getSize(); j++) {
+                    System.out.println(hashTable[i].getNode(j).getName());
+                }
+                System.out.println();
+            }
+        }
+    }
+
+    // Print the number of comparisons for each search
+    public void printNumComparisons() {
+        System.out.println("\nNumber of Comparisons: " + this.numComparisons);
+    }
+
+    // Print the average number of comparisons after a certain number of searches
+    public void printAvgComparison(int total) {
+        System.out.printf("\nAverage Number of Comparisons:  %.2f %n", this.comparisonTotal/total);
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Hash Table
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%   start Main Class and Results
+%----------------------------------------------------------------------------------------
+\section{Main Class and Average Comparison Results}
+
+\subsection{Main Class}
+
+\begin{enumerate}
+    \item Line 8-42: Populate the magic items in an array.
+    \item Line 46-47: Sort the magic items using Insertion Sort.
+    \item Line 50, Line 163-172: Place 42 random magic items in a new array.
+    \item Line 53-80: Search for the 42 set-aside items using Linear Search and count the number of comparisons for each completes search. Check if all items were found and calculate the average number of comparisons.
+    \item: Line 83-116: Search for the 42 set-aside items using Binary Search and count the number of comparisons for each completes search. Check if all items were found and calculate the average number of comparisons.
+    \begin{enumerate}
+        \item Line 89: Reset the number of comparisons for each completed search.
+        \item Line 100: Add the number of comparisons for a given search to the comparison total.
+    \end{enumerate}
+    \item Line 119-160: Search for the 42 set-aside items using a Hash Table. Print the number of comparisons for each search and calculate the average number of comparisons.
+    \begin{enumerate}
+        \item Line 122-125: Loop though all the magic items and assign a hash code value to each element in the array (see the assignment provided code in Hashing.java). Place the element at the designated hash code index.
+        \item Line 133-149: Loop through each of the 42 set-aside items and (re)create the hash code value. Use that value to get the element from the hash table. Break out of the loop if at any point an element cannot be found.
+    \end{enumerate}
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Random;
+import java.util.Scanner;
+
+class Assignment_3 {
+
+    public static Random randomGen = new Random();
+
+    public static void main(String[] args) {
+
+        // Get magic items from the input file
+        File file = new File("magicitems.txt");
+        Scanner myReader = null;
+        String[] magicItems = null;
+        int i = 0;
+        int numLines = 0;
+        
+        try {
+            myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                // count the number of lines in the file
+                numLines++;
+                myReader.nextLine();
+            }
+            myReader.close();
+
+            // create magic items array
+            magicItems = new String[numLines];
+
+            myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                // initialize magic items array with magic items
+                String data = myReader.nextLine();
+                magicItems[i] = data.toLowerCase();
+                i++;
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        // -------------------------------------------------------------------------------
+
+        // Sort the magic items
+        InsertionSort sortObj = new InsertionSort();
+        sortObj.sort(magicItems);
+
+        // Get 42 random magic items
+        String[] randItems = getRandomElements(magicItems);
+
+
+        /* Linear Search -------------------------------------------------------------- */
+        LinearSearch linearSearchObj = new LinearSearch();
+        boolean areAllFound = false;
+        i = 0;
+        while (i<randItems.length) {
+            int index = linearSearchObj.search(magicItems, randItems[i]);
+            if (index == -1) {
+                areAllFound = false;
+                break;
+            } else {
+                areAllFound = true;
+            }
+
+            // Print individual number of comparisons
+            // System.out.print("\n" + i + ": ");
+            // linearSearchObj.printNumComparisons();
+            i++;
+        }
+        // Print average number of comparisons
+        linearSearchObj.printAvgComparison(randItems.length);
+
+        System.out.println("-----------------------");
+        if (areAllFound) {
+            System.out.println("All items found!!");
+        } else {
+            System.out.println("Couldn't find " + randItems[i]);
+        }
+        /* END Linear Search -------------------------------------------------------------- */
+
+
+         /* Binary Search -------------------------------------------------------------- */
+        BinarySearch binarySearchObj = new BinarySearch();
+        areAllFound = false;
+        i = 0;
+        while (i<randItems.length) {
+            // Reset the number of comparisons each time new seach begins
+            binarySearchObj.numComparisons = 0;
+
+            int index = binarySearchObj.search(magicItems, randItems[i], 0, magicItems.length);
+            if (index == -1) {
+                areAllFound = false;
+                break;
+            } else {
+                areAllFound = true;
+            }
+
+            // Keep track of total number of comparisons for all searches in order to find average later
+            binarySearchObj.comparisonTotal += binarySearchObj.numComparisons;
+
+            // Print individual number of comparisons
+            // System.out.print("\n" + i + ": ");
+            // binarySearchObj.printNumComparisons();
+            i++;
+        }
+        // Print average number of comparisons
+        binarySearchObj.printAvgComparison(randItems.length);
+
+        System.out.println("-----------------------");
+        if (areAllFound) {
+            System.out.println("All items found!!");
+        } else {
+            System.out.println("Couldn't find " + randItems[i]);
+        }
+         /* END Binary Search -------------------------------------------------------------- */
+
+
+         /* Hashing -------------------------------------------------------------- */
+        Hashing hashingObj = new Hashing();
+        HashTable hashTableObj = new HashTable(hashingObj.HASH_TABLE_SIZE);
+        for (i=0; i<magicItems.length; i++) {
+            int hashCode = hashingObj.makeHashCode(magicItems[i]);
+            hashTableObj.put(hashCode, magicItems[i]);
+        }
+
+        // System.out.println("-----------------------");
+        // hashTableObj.print();
+        // System.out.println("-----------------------");
+
+        areAllFound = false;
+        i = 0;
+        while (i<randItems.length) {
+            // Recalculate hashcode value for each random item
+            int hashCode = hashingObj.makeHashCode(randItems[i]);
+            // Check if the item exists within hashcode list
+            boolean found = hashTableObj.get(hashCode, randItems[i]);
+            if (!found) {
+                areAllFound = false;
+                break;
+            } else {
+                areAllFound = true;
+            }
+            i++;
+
+            // Print individual number of comparisons
+            // System.out.print("\n" + j + ": ");
+            // hashTableObj.printNumComparisons();
+        }
+
+        // Print average number of comparisons
+        hashTableObj.printAvgComparison(randItems.length);
+
+        System.out.println("-----------------------");
+        if (areAllFound) {
+            System.out.println("All items found!!");
+        } else {
+            System.out.println("Couldn't find " + randItems[i]);
+        }
+        /* END Hashing -------------------------------------------------------------- */
+    }
+
+    public static String[] getRandomElements(String[] array) {
+        String[] randElements = new String[42];
+        Random rand= new Random();
+
+        for (int i=0; i<randElements.length; i++) {
+            int randIndex = rand.nextInt(666);
+            randElements[i] = array[randIndex];
+        }
+        return randElements;
+    }
+}
+\end{minted}
+
+\subsection{Average Comparison Results}
+
+\begin{center}
+\begin{tabular}{||c c||} 
+ \hline
+ Search Method & Average Number of Comparisons\\ [0.5ex] 
+ \hline\hline
+ Linear Search & 342.21  \\ 
+ \hline
+ Binary Search & 8.55 \\
+ \hline
+ Hash Table & 3.33 \\
+ \hline
+\end{tabular}
+\end{center}
+%----------------------------------------------------------------------------------------
+%   end Main Class and Results
+%----------------------------------------------------------------------------------------
+\end{document}

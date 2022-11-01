@@ -1,7 +1,5 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.security.AllPermission;
-import java.util.Hashtable;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -53,27 +51,50 @@ class Assignment_3 {
 
 
         /* Linear Search -------------------------------------------------------------- */
-        // Search for each of the random 42 items
         LinearSearch linearSearchObj = new LinearSearch();
-        for (int j=0; j<randItems.length; j++) {
-            linearSearchObj.search(magicItems, randItems[j]);
+        boolean areAllFound = false;
+        i = 0;
+        while (i<randItems.length) {
+            int index = linearSearchObj.search(magicItems, randItems[i]);
+            if (index == -1) {
+                areAllFound = false;
+                break;
+            } else {
+                areAllFound = true;
+            }
 
             // Print individual number of comparisons
-            // System.out.print("\n" + j + ": ");
+            // System.out.print("\n" + i + ": ");
             // linearSearchObj.printNumComparisons();
+            i++;
         }
         // Print average number of comparisons
-        // linearSearchObj.printAvgComparison(randItems.length);
+        linearSearchObj.printAvgComparison(randItems.length);
+
+        System.out.println("-----------------------");
+        if (areAllFound) {
+            System.out.println("All items found!!");
+        } else {
+            System.out.println("Couldn't find " + randItems[i]);
+        }
         /* END Linear Search -------------------------------------------------------------- */
 
 
          /* Binary Search -------------------------------------------------------------- */
         BinarySearch binarySearchObj = new BinarySearch();
-        for (i=0; i<randItems.length; i++) {
+        areAllFound = false;
+        i = 0;
+        while (i<randItems.length) {
             // Reset the number of comparisons each time new seach begins
             binarySearchObj.numComparisons = 0;
 
-            binarySearchObj.search(magicItems, randItems[i], 0, magicItems.length);
+            int index = binarySearchObj.search(magicItems, randItems[i], 0, magicItems.length);
+            if (index == -1) {
+                areAllFound = false;
+                break;
+            } else {
+                areAllFound = true;
+            }
 
             // Keep track of total number of comparisons for all searches in order to find average later
             binarySearchObj.comparisonTotal += binarySearchObj.numComparisons;
@@ -81,9 +102,17 @@ class Assignment_3 {
             // Print individual number of comparisons
             // System.out.print("\n" + i + ": ");
             // binarySearchObj.printNumComparisons();
+            i++;
         }
         // Print average number of comparisons
-        // binarySearchObj.printAvgComparison(randItems.length);
+        binarySearchObj.printAvgComparison(randItems.length);
+
+        System.out.println("-----------------------");
+        if (areAllFound) {
+            System.out.println("All items found!!");
+        } else {
+            System.out.println("Couldn't find " + randItems[i]);
+        }
          /* END Binary Search -------------------------------------------------------------- */
 
 
@@ -99,20 +128,20 @@ class Assignment_3 {
         // hashTableObj.print();
         // System.out.println("-----------------------");
 
-        boolean areAllFound = false;
-        int j = 0;
-        while (j<randItems.length) {
+        areAllFound = false;
+        i = 0;
+        while (i<randItems.length) {
             // Recalculate hashcode value for each random item
-            int hashCode = hashingObj.makeHashCode(randItems[j]);
+            int hashCode = hashingObj.makeHashCode(randItems[i]);
             // Check if the item exists within hashcode list
-            boolean found = hashTableObj.get(hashCode, randItems[j]);
+            boolean found = hashTableObj.get(hashCode, randItems[i]);
             if (!found) {
                 areAllFound = false;
                 break;
             } else {
                 areAllFound = true;
             }
-            j++;
+            i++;
 
             // Print individual number of comparisons
             // System.out.print("\n" + j + ": ");
@@ -122,9 +151,11 @@ class Assignment_3 {
         // Print average number of comparisons
         hashTableObj.printAvgComparison(randItems.length);
 
+        System.out.println("-----------------------");
         if (areAllFound) {
-            // System.out.println("-----------------------");
-            // System.out.println("\nAll items found!!");
+            System.out.println("All items found!!");
+        } else {
+            System.out.println("Couldn't find " + randItems[i]);
         }
         /* END Hashing -------------------------------------------------------------- */
     }

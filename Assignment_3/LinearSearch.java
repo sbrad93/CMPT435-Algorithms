@@ -14,10 +14,9 @@ class LinearSearch {
         int foundIndex = -1;
 
         while (i < array.length) {
-            // Loop through entire array until search is found
+            // Loop through entire array until target element is found
             if (array[i].compareTo(target.toLowerCase()) == 0) {
                 foundIndex = i;
-                // System.out.println(foundIndex + " " + search);
                 break;
             }
             this.numComparisons++;
@@ -33,8 +32,8 @@ class LinearSearch {
         System.out.println("\nNumber of Comparisons: " + this.numComparisons);
     }
 
-    // Print the average number of comparisons after a certain number of searches
+    // Print the average number of comparisons after a given number of searches
     public void printAvgComparison(int total) {
-        System.out.printf("\nAverage Number of Comparisons:  %.2f %n", this.comparisonTotal/total);
+        System.out.printf("\nLinear Search: Average Number of Comparisons:  %.2f %n", this.comparisonTotal/total);
     }
 }
