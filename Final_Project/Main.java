@@ -5,7 +5,6 @@ import java.util.Scanner;
 public class Main {
     public static void main(String args[]) {
 
-        // Get the residents and their preferences
         File file = new File("residentsPref.txt");
         Scanner myReader = null;
 
@@ -17,9 +16,7 @@ public class Main {
 
         int i = 0;
         int j = 0;
-        
         try {
-
 
             // Get each of the resident names and put them in the resident list
             myReader = new Scanner(file);
@@ -32,7 +29,6 @@ public class Main {
                 i++;
             }
             myReader.close();
-
 
             // Create and initalize a hash table of resident preferences
             i = 0;
@@ -53,13 +49,13 @@ public class Main {
             }
             myReader.close();
 
-            // Get the hospitals and their preferences
+
+
+            // Get each of the hospital names and put them in the hospital list
             file = new File("hospitalsPref.txt");
             myReader = new Scanner(file);
             i = 0;
             j = 0;
-
-            // Get each of the hospital names and put them in the hospital list
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
                 String arr[] = data.split(" ", 2);
@@ -80,14 +76,13 @@ public class Main {
                 String arr[] = data.split(" ", 2);
                 String preferences[] = arr[1].split(" ", 0);
 
-                int resKey = Integer.parseInt(arr[0].substring(arr.length-1));
+                int hosKey = Integer.parseInt(arr[0].substring(arr.length-1));
                 for (j=0; j<preferences.length; j++) {
                     // Populate the hash table
-                    hospitalsPref.put(resKey, preferences[j]);
+                    hospitalsPref.put(hosKey, preferences[j]);
                 }
             }
             myReader.close();
-
 
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
@@ -96,6 +91,9 @@ public class Main {
         // -------------------------------------------------------------------------------
 
         // residentsPref.print();
-        hospitalsPref.print();
+        // hospitalsPref.print();
+
+        StableMatching matchMaker = new StableMatching();
+        matchMaker.doMatching(residents, hospitals, residentsPref, hospitalsPref);
     }
 }

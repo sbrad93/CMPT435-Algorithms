@@ -31,12 +31,14 @@ class LinkedList {
     }
 
     // Remove an element from the list
-    public void remove(String str) {
+    public String remove(int index) {
         Node currNode = this.head;
         Node prevNode = null;
-        int i =0;
+        String removedElement = "";
+        int i = 0;
         while (currNode != null) {
-            if (str.equals(currNode.getName())) {
+            if (index == i) {
+                removedElement = currNode.getName();
                 if (prevNode == null) {
                     // Removing the head of the list
                     // Update head node
@@ -53,6 +55,7 @@ class LinkedList {
             currNode = currNode.getNext();
         }
         this.length--;
+        return removedElement;
     }
 
     // Get target node
@@ -72,6 +75,17 @@ class LinkedList {
             i++;
         }
         return res;
+    }
+
+    public boolean doesContain(String element) {
+        boolean ans = false;
+        Node currNode = this.head;
+        while (currNode != null) {
+            if (currNode.getName().compareTo(element) == 0) {
+                ans = true;
+            }
+        }
+        return ans;
     }
 
     // Print the list

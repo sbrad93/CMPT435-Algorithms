@@ -15,17 +15,19 @@ class HashTable {
         this.hashTable[code].add(element);
     }
 
-    public boolean get(int code, String element) {
-        boolean res = false;
-        int i = 0;
-        while (i<this.hashTable[code].getSize()) {
-            if (this.hashTable[code].getNode(i).getName().compareTo(element) == 0) {
-                res = true;
-                break;
-            }
-            i++;
-        }
-        return res;
+    public LinkedList get(int code) {
+        // boolean res = false;
+        // int i = 0;
+        // while (i<this.hashTable[code].getSize()) {
+        //     if (this.hashTable[code].getNode(i).getName().compareTo(element) == 0) {
+        //         res = true;
+        //         break;
+        //     }
+        //     i++;
+        // }
+        // return res;
+
+        return this.hashTable[code];
     }
 
     // Print the entire hash table
