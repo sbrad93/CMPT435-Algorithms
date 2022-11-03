@@ -30,7 +30,7 @@ class LinkedList {
         this.length++;
     }
 
-    // Remove an element from the list
+    // Remove an element from the list given a target index
     public String remove(int index) {
         Node currNode = this.head;
         Node prevNode = null;
@@ -58,15 +58,40 @@ class LinkedList {
         return removedElement;
     }
 
-    // Get target node
+    public String removeNode(String target) {
+        Node currNode = this.head;
+        Node prevNode = null;
+        String removedElement = "";
+        while (currNode != null) {
+            if (currNode.getName().compareTo(target) == 0) {
+                removedElement = target;
+                if (prevNode == null) {
+                    // Removing the head of the list
+                    // Update head node
+                    this.head = currNode.getNext();
+                } else {
+                    // Connect prevNode's next to currNode's next
+                    prevNode.setNext(currNode.getNext());
+                    // CurrNode is removed
+                    currNode.setNext(null);
+                }
+            }
+            prevNode = currNode;
+            currNode = currNode.getNext();
+        }
+        this.length--;
+        return removedElement;
+    }
+
+    // Get target node given a target index
     public Node getNode(int targetIndex) {
-        Node res = null;
+        Node ans = null;
         Node currNode = this.head;
         int i = 0;
 
         while (currNode != null) {
             if (i == targetIndex) {
-                res = currNode;
+                ans = currNode;
                 break;
             }
 
@@ -74,9 +99,27 @@ class LinkedList {
             currNode = currNode.getNext();
             i++;
         }
-        return res;
+        return ans;
     }
 
+    public int getIndex(String target) {
+        int ans = -1;
+        Node currNode = this.head;
+        int i = 0;
+
+        while (currNode != null) {
+            if (currNode.getName().compareTo(target) == 0) {
+                ans = i;
+                break;
+            }
+
+            currNode = currNode.getNext();
+            i++;
+        }
+        return ans;
+    }
+
+    // Checl if the list contains a target string
     public boolean doesContain(String element) {
         boolean ans = false;
         Node currNode = this.head;

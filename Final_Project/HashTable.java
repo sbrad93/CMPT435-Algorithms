@@ -16,17 +16,6 @@ class HashTable {
     }
 
     public LinkedList get(int code) {
-        // boolean res = false;
-        // int i = 0;
-        // while (i<this.hashTable[code].getSize()) {
-        //     if (this.hashTable[code].getNode(i).getName().compareTo(element) == 0) {
-        //         res = true;
-        //         break;
-        //     }
-        //     i++;
-        // }
-        // return res;
-
         return this.hashTable[code];
     }
 
