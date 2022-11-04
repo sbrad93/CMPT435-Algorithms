@@ -30,8 +30,8 @@ class LinkedList {
         this.length++;
     }
 
-    // Remove an element from the list given a target index
-    public String remove(int index) {
+    // Remove a Node from the list given a target index
+    public String removeAt(int index) {
         Node currNode = this.head;
         Node prevNode = null;
         String removedElement = "";
@@ -58,6 +58,7 @@ class LinkedList {
         return removedElement;
     }
 
+    // Remove a target Node from the list
     public String removeNode(String target) {
         Node currNode = this.head;
         Node prevNode = null;
@@ -102,6 +103,7 @@ class LinkedList {
         return ans;
     }
 
+    // Get a Node index given the Node name
     public int getIndex(String target) {
         int ans = -1;
         Node currNode = this.head;
@@ -119,7 +121,7 @@ class LinkedList {
         return ans;
     }
 
-    // Checl if the list contains a target string
+    // Check if the list contains a target string
     public boolean doesContain(String element) {
         boolean ans = false;
         Node currNode = this.head;

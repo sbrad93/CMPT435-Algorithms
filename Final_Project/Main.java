@@ -90,10 +90,9 @@ public class Main {
         }
         // -------------------------------------------------------------------------------
 
-        // residentsPref.print();
-        // hospitalsPref.print();
-
         StableMatching matchMaker = new StableMatching();
-        matchMaker.doMatching(residents, hospitals, residentsPref, hospitalsPref);
+        HashTable myStableMatches = matchMaker.doMatching(residents, hospitals, residentsPref, hospitalsPref);
+        myStableMatches.printPairingFormat("h");
+
     }
 }

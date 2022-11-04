@@ -32,4 +32,15 @@ class HashTable {
             }
         }
     }
+
+    // Print all hashtabl pairings
+    public void printPairingFormat(String keyName) {
+        for (int i=0; i<hashTable.length; i++) {
+            if (hashTable[i] != null) {
+                for (int j=0; j<hashTable[i].getSize(); j++) {
+                    System.out.println("(" + keyName + i + ", " + hashTable[i].getNode(j).getName() + ")");
+                }
+            }
+        }
+    }
 }
