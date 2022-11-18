@@ -4,22 +4,18 @@ class Graph {
     private AdjacencyList adjList = null;
     private Matrix matrix = null;
 
-    Graph(int numVertices) {
+    Graph(String[] verticeArr) {
         this.vertices = new LinkedList();
-        this.adjList = new AdjacencyList(numVertices);
-        this.matrix = new Matrix(numVertices);
-        this.init(numVertices);
+        this.adjList = new AdjacencyList(verticeArr.length);
+        this.matrix = new Matrix(verticeArr);
     }
 
-    // Initialize the graph vertices
-    public void init(int numVertices) {
-        for (int i=numVertices; i>0; i--) {
-            this.vertices.add(i+"");
-        }
+    public void addVertex(String vid) {
+        this.vertices.add(vid);
     }
 
     // Create an edge between two vertices
-    public void createEdge(int vid1, int vid2) {
+    public void createEdge(String vid1, String vid2) {
         Vertex vertex1 = new Vertex(vid1+"");
         Vertex vertex2 = new Vertex(vid2+"");
         vertex1.getNeighbors().add(vid2+"");

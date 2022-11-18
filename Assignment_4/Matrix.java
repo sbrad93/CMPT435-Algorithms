@@ -1,9 +1,11 @@
 class Matrix {
 
     private String[][] matrixArr = null;
+    private String[] verticeArr = null;
 
-    public Matrix(int numVertices) {
-        this.matrixArr = new String[numVertices][numVertices];
+    public Matrix(String[] vertices) {
+        this.matrixArr = new String[vertices.length][vertices.length];
+        this.verticeArr = vertices;
         this.init();
     }
 
@@ -17,13 +19,12 @@ class Matrix {
     }
 
     // Creates an entry in the matrix array with a value of "1"
-    public void createEntry(int rowEle, int columnEle) {
+    public void createEntry(String rowEle, String columnEle) {
         for (int i=0; i<this.matrixArr.length; i++) {
             for (int j=0; j<this.matrixArr[i].length; j++) {
-                if (i==rowEle && j==columnEle) {
-                    // vertices start at 1 instead of 0,
-                    // so we have to account for that when plotting in the matrix
-                    this.matrixArr[i-1][j-1] = "1";
+                if (this.verticeArr[i].compareTo(rowEle) == 0 && this.verticeArr[j].compareTo(columnEle) == 0) {
+                    this.matrixArr[i][j] = "1";
+                    this.matrixArr[j][i] = "1";
                 }
             }
         }
@@ -31,7 +32,13 @@ class Matrix {
 
     // Prints the matrix array in matrix format
     public void print() {
+        System.out.print(" ".repeat(2));
+        for (int v=0; v<this.verticeArr.length; v++) {
+            System.out.print(this.verticeArr[v] + " ");
+        }
+        System.out.println();
         for (int i=0; i<this.matrixArr.length; i++) {
+            System.out.print(this.verticeArr[i] + " ");
             for (int j=0; j<this.matrixArr[i].length; j++) {
                 System.out.print(this.matrixArr[i][j] + " ");
             }

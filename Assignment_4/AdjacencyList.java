@@ -1,42 +1,21 @@
 class AdjacencyList {
 
-    private LinkedList[] adjArr = null;
+    private HashTable adjTable = null;
 
     AdjacencyList(int numVertices) {
-        // an array of LinkedLists with a length of the number of vertices
-        this.adjArr = new LinkedList[numVertices];
+        // a hash table of vertices
+        this.adjTable = new HashTable(numVertices+1);
     }
 
     // Add each vertice to the other vertice's neighbors list
-    public void createEntry(int vertex1, int vertex2) {
-        for (int i=0; i<this.adjArr.length; i++) {
-            if (i == vertex1) {
-                // Create a linked list if one doesn't exist
-                if (this.adjArr[i] == null) {
-                    this.adjArr[i] = new LinkedList();
-                }
-                this.adjArr[i].add(vertex2+"");
-            }
-        }
-        for (int j=0; j<this.adjArr.length; j++) {
-            if (j == vertex2) {
-                // Create a linked list if one doesn't exist
-                if (this.adjArr[j] == null) {
-                    this.adjArr[j] = new LinkedList();
-                }
-                this.adjArr[j].add(vertex1+"")
-;            }
-        }
+    public void createEntry(String vertex1, String vertex2) {
+        this.adjTable.put(Integer.parseInt(vertex1), vertex2);
+        this.adjTable.put(Integer.parseInt(vertex2), vertex1);
     }
 
-    // Print the Adjacency List
+    // Print the adjacency list
     public void print() {
-        for (int i=0; i<this.adjArr.length; i++) {
-            if (this.adjArr[i] != null) {
-                System.out.print("Vertex " + i + ": ");
-                this.adjArr[i].print();
-            }
-        }
+        this.adjTable.print();;
     }
 
     public AdjacencyList getAdjacenyList() {

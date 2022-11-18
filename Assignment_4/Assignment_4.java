@@ -117,20 +117,32 @@ class Assignment_4 {
             i=0;
             while (i < numGraphs) {
                 if (myReader.nextLine().contains("new")) {
-                    // Count t
-                    int numVertices = 0;
                     String line = myReader.nextLine();
+                    String verticesStr = "";
                     while (line.contains("vertex")) {
-                        numVertices++;
+                        // Get the vertex id (vid)
+                        String vid = line.substring(line.lastIndexOf(" ") + 1);
+                        // Keep a string of vid data
+                        verticesStr += vid + " ";
                         line = myReader.nextLine();
                     }
-                    graphs[i] = new Graph (numVertices);
+
+                    // Create the graph using an array of vid's
+                    String[] verticeArr = verticesStr.split(" ");
+                    graphs[i] = new Graph (verticeArr);
+                    for (int j=verticeArr.length-1; j>=0; j--) {
+                        graphs[i].addVertex(verticeArr[j]);
+                    }
+            
+                    // Create all the edges
                     while (line.contains("edge")) {
+                        // The line substring with edge data
                         String edgeStr = line.substring(9);
+
+                        // Get each vid connecting the edge and create the edge
                         String[] vertices = edgeStr.split(" - ");
-                
-                        int vertex1 = Integer.parseInt(vertices[0]);
-                        int vertex2 = Integer.parseInt(vertices[1]);
+                        String vertex1 = vertices[0];
+                        String vertex2 = vertices[1];
                         graphs[i].createEdge(vertex1, vertex2);
 
                         if (myReader.hasNextLine()) {
@@ -139,7 +151,13 @@ class Assignment_4 {
                             break;
                         }
                     }
+                    System.out.println("--------------------------------");
+                    graphs[i].getVertices().print();
+                    System.out.println();
                     graphs[i].getAdjacencyList().print();
+                    System.out.println();
+                    graphs[i].getMatrix().print();
+                    System.out.println("--------------------------------");
                     i++;
                 }
             }
