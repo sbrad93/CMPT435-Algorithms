@@ -6,7 +6,7 @@ class Assignment_4 {
 
     public static void main(String[] args) {
 
-        // Get magic items
+        // Get magic items --------------------------------------------------
         File file = new File("magicitems.txt");
         Scanner myReader = null;
         String[] magicItems = null;
@@ -37,9 +37,10 @@ class Assignment_4 {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        // -------------------------------------------------------------------------------
+        // END get magic items ------------------------------------------------
 
-        // Get the target magic items
+
+        // Get the target magic items -----------------------------------------
         file = new File("magicitems-find-in-bst.txt");
         String[] targetMagicItems = null;
         i = 0;
@@ -69,29 +70,109 @@ class Assignment_4 {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        // -------------------------------------------------------------------------------
-        
+        // END get the target magic items -----------------------------------------
+
+    
+        // Binary Search Tree -----------------------------------------------------
         BinarySearchTree myBST = new BinarySearchTree();
         for (i=0; i<magicItems.length; i++) {
             myBST.insert(magicItems[i]);
         }
 
         for (i=0; i<targetMagicItems.length; i++) {
-            myBST.printNodePath(targetMagicItems[i]);
-            myBST.printNumComparisons();
-            System.out.println();
+            // myBST.printNodePath(targetMagicItems[i]);
+            // myBST.printNumComparisons();
+            // System.out.println();
         }
 
-        myBST.printAvgComparison(targetMagicItems.length);
+        // myBST.printAvgComparison(targetMagicItems.length);
+
+        // Print an in-order traversal of the tree
         // myBST.inOrderTraversal(myBST.getRoot());
 
+        // END Binary Search Tree --------------------------------------------------
+
+
+        // Undirected Graph --------------------------------------------------------
+
+        // Get the graph file and process graph data
+        file = new File("graphs1.txt");
+        int numGraphs = 0;
+
+        try {
+            // First, count the number of graphs in the file
+            myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                if (myReader.nextLine().contains("new")) {
+                    numGraphs++;
+                }
+            }
+            // Initialize an array of graphs
+            Graph[] graphs = new Graph[numGraphs];
+            System.out.println("Number of graphs in file: " + numGraphs);
+            myReader.close();
+
+            // Next, process the graph data for each graph
+            myReader = new Scanner(file);
+            i=0;
+            while (i < numGraphs) {
+                if (myReader.nextLine().contains("new")) {
+                    // Count t
+                    int numVertices = 0;
+                    String line = myReader.nextLine();
+                    while (line.contains("vertex")) {
+                        numVertices++;
+                        line = myReader.nextLine();
+                    }
+                    graphs[i] = new Graph (numVertices);
+                    while (line.contains("edge")) {
+                        String edgeStr = line.substring(9);
+                        String[] vertices = edgeStr.split(" - ");
+                
+                        int vertex1 = Integer.parseInt(vertices[0]);
+                        int vertex2 = Integer.parseInt(vertices[1]);
+                        graphs[i].createEdge(vertex1, vertex2);
+
+                        if (myReader.hasNextLine()) {
+                            line = myReader.nextLine();
+                        } else {
+                            break;
+                        }
+                    }
+                    graphs[i].getAdjacencyList().print();
+                    i++;
+                }
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+
+        // END Undirected Graph ----------------------------------------------------
 
 
 
 
 
 
-/*      // test file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // test file
+        /* 
         file = new File("test.txt");
         myReader = null;
         String[] testItems = null;
