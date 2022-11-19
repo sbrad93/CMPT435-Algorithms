@@ -1,0 +1,797 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CMPT 435
+% Fall 2022
+% Assignment 4
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from: http://www.LaTeXTemplates.com
+% Original author: % Frits Wenneker (http://www.howtotex.com)
+% License: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% Modified by Alan G. Labouseur  - alan@labouseur.com
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[letterpaper, 10pt,DIV=13]{scrartcl} 
+\usepackage{minted}
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm,xfrac} % Math packages
+\usepackage{sectsty} % Allows customizing section commands
+\usepackage{graphicx}
+\usepackage[lined,linesnumbered,commentsnumbered]{algorithm2e}
+\usepackage{listings}
+\usepackage{parskip}
+\usepackage{lastpage}
+
+\allsectionsfont{\normalfont\scshape} % Make all section titles in default font and small caps.
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{page \thepage\ of \pageref{LastPage}} % Page numbering for right footer
+
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs.
+
+\binoppenalty=3000
+\relpenalty=3000
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+   \normalfont \normalsize 
+   \textsc{CMPT 435 - Fall 2022 - Dr. Labouseur} \\[10pt] % Header stuff.
+   \horrule{0.5pt} \\[0.25cm] 	     % Top horizontal rule
+   \huge Assignment Four  \\     	 % Assignment title
+   \horrule{0.5pt} \\[0.25cm] 	     % Bottom horizontal rule
+}
+
+\author{Shannon Brady \\ \normalsize shannon.brady2@Marist.edu}
+
+\date{\normalsize\today} 	% Today's date.
+
+\begin{document}
+\maketitle % Print the title
+
+%----------------------------------------------------------------------------------------
+%   start Binary Search Tree
+%----------------------------------------------------------------------------------------
+\section{Binary Search Tree}
+\begin{enumerate}
+    \item The Binary Search Tree class has the following attributes: 
+    \begin{enumerate}
+        \item root: the tree root
+        \item numComparisons: number of comparisons necessary to complete a search
+        \item totalComparisons: a provisional attribute that tracks the total number of comparisons completed over a certain number of searches.
+    \end{enumerate}
+    \item Line 13-36: Insert a new node in the tree by traversing through the tree to find the location where it belongs, and then setting it's left and right pointers accordingly.
+    \item Line 39-66: Print the node path from the root to a given target
+    \begin{enumerate}
+        \item Line 48-51: Break if the target is the root node.
+        \item Line 53-58: Traverse to the left or right depending on if the target is to the left or right of the current node.
+        \item Line 59-62: Break from the loop because target node has been found.
+    \end{enumerate}
+    \item Line 75-81: Prints out the entire Binary Search tree by traversing the tree in order.
+    \item Running Time Analysis: Given that the tree is balanced, the expected running time complexity of a BST lookup is $O(log_2n)$. This is due to the fact that with each comparison, the remaining search area is cut in half; therefore, running time is proportional to the height of the tree. In an unbalanced tree, the worst-case scenario is a time complexity off O(n), with each node being linked in direct succession of the previous node.
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class BinarySearchTree {
+
+    private Node root = null;
+    private int numComparisons;
+    private double totalComparisons;
+
+    public BinarySearchTree() {
+        this.numComparisons = 0;
+        this.totalComparisons = 0;
+    }
+
+    // Inserts a new node into the tree
+    public void insert(String nodeName) {
+        Node node = new Node(nodeName);
+        Node curr = this.root;
+        Node trailing = null;
+
+        while (curr != null) {
+            trailing = curr;
+            if (node.getName().compareTo(curr.getName()) < 0) {
+                curr = curr.getLeft();
+            } else {
+                curr = curr.getRight();
+            }
+        }
+        node.setParent(trailing);
+        if (trailing == null) {
+            this.root = node;
+        } else {
+            if (node.getName().compareTo(trailing.getName()) < 0) {
+                trailing.setLeft(node);
+            } else {
+                trailing.setRight(node);
+            }
+        }
+    }
+
+    // Prints the path from the root to a target node
+    public void printNodePath(String target) {
+        Node curr = this.root;
+        String path = "";
+        Boolean isFound = false;
+        this.numComparisons = 0;
+
+        System.out.println("Node path for: " + target);
+        while (curr != null) {
+            this.numComparisons++;
+            if (target.compareTo(this.root.getName()) == 0) {                                                 
+                path = "no path to root node";
+                isFound = true;
+                break;
+            } else {
+                if (target.compareTo(curr.getName()) < 0) {                                                   
+                    curr = curr.getLeft();
+                    path += " L";
+                } else if (target.compareTo(curr.getName()) > 0) {                                            
+                    curr = curr.getRight();
+                    path += " R";
+                } else {
+                    if (target.compareTo(curr.getName()) == 0 || target.compareTo(curr.getName()) == 0) {     
+                        isFound = true;
+                        break;
+                    }
+                }
+            }
+        }
+        this.totalComparisons += this.numComparisons;
+        if (isFound) {
+            System.out.println(path);
+        } else {
+            System.out.println("Cannot find " + target);
+        }
+    }
+
+    public void inOrderTraversal(Node node) {
+        if (node != null) {
+            inOrderTraversal(node.getLeft());
+            System.out.print(" => " + node.getName());
+            inOrderTraversal(node.getRight());
+        }
+    }
+
+    // Print the number of comparisons for each search
+    public void printNumComparisons() {
+        System.out.println("Number of Comparisons: " + this.numComparisons);
+    }
+
+    // Print the average number of comparisons after a given number of searches
+    public void printAvgComparison(int total) {
+        System.out.printf("\nAverage Number of Comparisons:  %.2f %n", this.totalComparisons/total);
+    }
+
+    /* Getters and Setters */
+    public Node getRoot() {
+        return this.root;
+    } // getRoot
+
+    public void setRoot(Node newRoot) {
+        this.root = newRoot;
+    } // setRoot
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Binary Search Tree
+%----------------------------------------------------------------------------------------
+
+
+%----------------------------------------------------------------------------------------
+%   start Node
+%----------------------------------------------------------------------------------------
+\section{Node (used in the Binary Search class)}
+\begin{enumerate}
+    \item The Node class has the following attributes:
+    \begin{enumerate}
+        \item name: node name
+        \item left: pointer to the left node
+        \item right: pointer to the right node
+        \item parent: pointer to the parent node
+    \end{enumerate}
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class Node {
+
+    private String name = "";
+    private Node left = null;
+    private Node right = null;
+    private Node parent = null;
+
+    /* Node class constructor */
+    public Node(String name) {
+        this.name = name;
+        this.left = null;
+        this.right = null;
+        this.parent = null;
+    }
+
+    /* Getters and Setters */
+    public String getName() {
+        return this.name;
+    } // getName
+
+    public Node getLeft() {
+        return this.left;
+    } // getLeft
+
+    public Node getRight() {
+        return this.right;
+    } // getRight
+
+    public Node getParent() {
+        return this.parent;
+    } // getParent
+
+    public void setName(String newName) {
+        this.name = newName;
+    } // setName
+
+    public void setLeft(Node newLeft) {
+        this.left = newLeft;
+    } // setLeft
+
+    public void setRight(Node newRight) {
+        this.right = newRight;
+    } // setLeft
+
+    public void setParent(Node newParent) {
+        this.parent = newParent;
+    } // setParent
+
+    @Override
+    public String toString() {
+        return("Name: " + this.getName() + "\n");
+    } // toString
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Node
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%   start Graph
+%----------------------------------------------------------------------------------------
+\section{Undirected Graph}
+\begin{enumerate}
+    \item The Graph class has the following attributed:
+    \begin{enumerate}
+        \item vertices: a Linked List of vertex objects within the graph
+        \item adjList: an AdjacencyList object containing graph adjacency list data
+        \item matrix: a Matrix object containing graph matrix data
+    \end{enumerate}
+    \item Line 13-15: Add a vertex to the vertices list
+    \item Line 18-26: Create a graph edge
+    \begin{enumerate}
+        \item 
+    \end{enumerate}
+        \begin{enumerate}
+            \item Line 19-22: Get the two vertex objects and add them to each other's neighbors list
+            \item Line 24: Create an entry in the adjacency list
+            \item Line 25: Create a matrix entry
+        \end{enumerate}
+        \item Line 29-44: Complete a depth-first traversal of the graph
+        \begin{enumerate}
+            \item Line 30-33: Print all unprocessed vertices and set to processed
+            \item Line Line 34-43: Loop through each vertex's neighbors, and if a neighbor isn't already processed, recursively call DFS with that neighbor as the parameter.
+        \end{enumerate}
+        \item Line 47-69: Complete a breadth-first traversal of the graph
+        \begin{enumerate}
+            \item Line 48-51: Create a queue of vertices to be processed. Enqueue the given vertex and set to processed.
+            \item Line 53-67: While the queue isn't empty, dequeue from the queue and loop through the current vertex's neighbors. If any of the neighbors aren't already processed, enqueue the neighbor and set to processed.
+        \end{enumerate}
+        \item Line 71-75: De-process all the vertices
+    \item Running Time Analysis: A DFS traversal is a stack-based algorithm that explores as far as possible along each edge before backtracking and repeating the cycle again. A BFS traversal is a queue-based algorithms explores vertices in order of their distance from the original vertex, with closest vertices being traversed first. Both traversals are have an asymptotic running time of roughly O(V+E), with V being the set of vertices in the graph, and E being the set of edges.
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class Graph {
+
+    private LinkedList vertices = null;
+    private AdjacencyList adjList = null;
+    private Matrix matrix = null;
+
+    Graph(String[] verticeArr) {
+        this.vertices = new LinkedList();
+        this.adjList = new AdjacencyList(verticeArr.length);
+        this.matrix = new Matrix(verticeArr);
+    }
+
+    public void addVertex(String vid) {
+        this.vertices.add(vid);
+    }
+
+    // Create an edge between two vertices
+    public void createEdge(String vid1, String vid2) {
+        Vertex vertex1 = this.vertices.getVertexByID(vid1);
+        Vertex vertex2 = this.vertices.getVertexByID(vid2);
+        vertex1.getNeighbors().add(vid2);
+        vertex2.getNeighbors().add(vid1);
+
+        this.adjList.createEntry(vid1, vid2);
+        this.matrix.createEntry(vid1, vid2);
+    }
+
+    // Depth-first traveral
+    public void DFS(Vertex vertex) {
+        if (!vertex.isProcessed) {
+            System.out.print(vertex.getID() + " ");
+            vertex.isProcessed = true;
+        }
+        for (int i=0; i<vertex.getNeighbors().getSize(); i++) {
+            Vertex neighbor = vertex.getNeighbors().getVertexAt(i);
+
+            // Get the og vertex object with this id
+            // This is the object with populated neighbors
+            neighbor = this.vertices.getVertexByID(neighbor.getID());
+            if (!neighbor.isProcessed) {
+                this.DFS(neighbor);
+            }
+        }
+    }
+
+    // Breadth-first traversal
+    public void BFS(Vertex vertex) {
+        Queue queue = new Queue();
+        Vertex temp = new Vertex(vertex.getID());
+        queue.enqueue(temp);
+        vertex.isProcessed = true;
+
+        while (!queue.isEmpty()) {
+            Vertex currVertex = queue.dequeue();
+            currVertex = this.vertices.getVertexByID(currVertex.getID());
+
+            System.out.print(currVertex.getID() + " ");
+
+            for (int i=0; i<currVertex.getNeighbors().getSize(); i++) {
+                Vertex neighbor = currVertex.getNeighbors().getVertexAt(i);
+                neighbor = this.vertices.getVertexByID(neighbor.getID());
+                if (!neighbor.isProcessed) {
+                    temp = new Vertex(neighbor.getID());
+                    queue.enqueue(temp);
+                    neighbor.isProcessed = true;
+                }
+            }
+        }
+    }
+
+    public void resetVerticeProcessStatuses() {
+        for (int i=0; i<this.vertices.getSize(); i++) {
+            this.vertices.getVertexAt(i).isProcessed = false;
+        }
+    }
+
+    /* Getters */
+    public LinkedList getVertices() {
+        return this.vertices;
+    } // getVertices
+
+    public AdjacencyList getAdjacencyList() {
+        return this.adjList;
+    } // getAdjacencyList
+
+    public Matrix getMatrix() {
+        return this.matrix;
+    } // getMatrix
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Graph
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%   start Matrix
+%----------------------------------------------------------------------------------------
+\section{Matrix}
+
+\begin{enumerate}
+    \item The Matrix class has the following attributes:
+    \begin{enumerate}
+        \item matrixArr: a two-dimensional array used to represent a matrix
+        \item verticeArr: an array of Vertex objects used to create the matrix
+        \item Line 6-10: Initialize the matrix with dashes.
+        \item Line 22-31: Create an entry at both intersection with the provided vertices. Mark entries with a "1".
+        \item Line 34-43: Print the matrix
+    \end{enumerate}
+\end{enumerate}
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class Matrix {
+
+    private String[][] matrixArr = null;
+    private String[] verticeArr = null;
+
+    public Matrix(String[] vertices) {
+        this.matrixArr = new String[vertices.length][vertices.length];
+        this.verticeArr = vertices;
+        this.init();
+    }
+
+    // Initializes the matrix array with dashes
+    public void init() {
+        for (int i=0; i<this.matrixArr.length; i++) {
+            for (int j=0; j<this.matrixArr[i].length; j++) {
+                this.matrixArr[i][j] = "-";
+            }
+        }
+    }
+
+    // Creates an entry in the matrix array with a value of "1"
+    public void createEntry(String rowEle, String columnEle) {
+        for (int i=0; i<this.matrixArr.length; i++) {
+            for (int j=0; j<this.matrixArr[i].length; j++) {
+                if (this.verticeArr[i].compareTo(rowEle) == 0 && this.verticeArr[j].compareTo(columnEle) == 0) {
+                    this.matrixArr[i][j] = "1";
+                    this.matrixArr[j][i] = "1";
+                }
+            }
+        }
+    }
+
+    // Prints the matrix array in matrix format
+    public void print() {
+        System.out.println();
+        for (int i=0; i<this.matrixArr.length; i++) {
+            System.out.print(this.verticeArr[i] + " ");
+            for (int j=0; j<this.matrixArr[i].length; j++) {
+                System.out.print(this.matrixArr[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public Matrix getMatrix() {
+        return this;
+    }
+}
+\end{minted}
+
+%----------------------------------------------------------------------------------------
+%   end Matrix
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%   start Adjacency List
+%----------------------------------------------------------------------------------------
+\section{Adjacency List}
+
+\begin{enumerate}
+    \item The AdjacencyList class has the following attributes:
+    \begin{enumerate}
+        \item adjTable: a HashTable used to represent an adjacency list of vertices and their neighbors
+        \item Line 11-14: Add both vertices and each other's adjTable
+        \item Line 17-19: Print the adjacency list
+    \end{enumerate}
+\end{enumerate}
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class AdjacencyList {
+
+    private HashTable adjTable = null;
+
+    AdjacencyList(int numVertices) {
+        // a hash table of vertices
+        this.adjTable = new HashTable(numVertices+1);
+    }
+
+    // Add each vertice to the other vertice's neighbors list
+    public void createEntry(String vertex1, String vertex2) {
+        this.adjTable.put(Integer.parseInt(vertex1), vertex2);
+        this.adjTable.put(Integer.parseInt(vertex2), vertex1);
+    }
+
+    // Print the adjacency list
+    public void print() {
+        this.adjTable.print();;
+    }
+
+    public AdjacencyList getAdjacenyList() {
+        return this;
+    }
+}
+\end{minted}
+
+%----------------------------------------------------------------------------------------
+%   end AdjacencyList
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%   start Main
+%----------------------------------------------------------------------------------------
+\section{Main}
+
+\begin{enumerate}
+    \item Line 9-40: Create an array of magic items
+    \item Line 43-73: Create an array of target magic items
+    \item Line 76-94: Binary Search Tree
+    \begin{enumerate}
+        \item Line 77-80: Create and initialize the BST
+        \item Line 82-88: Print the node path from the root to each of the target magic items. Print the individual number of comparisons for each search and calculate the average.
+        \item Line 92: Print and in-order tree traversal of the BST
+    \end{enumerate}
+    \item Line 97-136: Undirected Graph
+    \begin{enumerate}
+        \item Line 104-114: Create an array with a length of the number of graphs in the file
+        \item 119-154: For each graph in the file, create an array of vertex id's and then use this array to initialize a new graph. Add each of the vertices to the graph. Then, create each of the edges.
+    \end{enumerate}
+    \item Line 157: Print the vertices in the graph
+    \item Line 161: Complete a depth-first traversal
+    \item Line 169: Complete a breadth-first traversal
+    \item Line 173: Print the adjacency list
+    \item Line 176: Print the matrix
+\end{enumerate}
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+class Assignment_4 {
+
+    public static void main(String[] args) {
+
+        // Get magic items --------------------------------------------------
+        File file = new File("magicitems.txt");
+        Scanner myReader = null;
+        String[] magicItems = null;
+        int i = 0;
+        int numLines = 0;
+        
+        try {
+            myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                // count the number of lines in the file
+                numLines++;
+                myReader.nextLine();
+            }
+            myReader.close();
+
+            // create magic items array
+            magicItems = new String[numLines];
+
+            myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                // initialize magic items array with magic items
+                String data = myReader.nextLine();
+                magicItems[i] = data.toLowerCase();
+                i++;
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        // END get magic items ------------------------------------------------
+
+
+        // Get the target magic items -----------------------------------------
+        file = new File("magicitems-find-in-bst.txt");
+        String[] targetMagicItems = null;
+        i = 0;
+        numLines = 0;
+        
+        try {
+            myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                // count the number of lines in the file
+                numLines++;
+                myReader.nextLine();
+            }
+            myReader.close();
+
+            // create target magic items array
+            targetMagicItems = new String[numLines];
+
+            myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                // initialize with target magic items
+                String data = myReader.nextLine();
+                targetMagicItems[i] = data.toLowerCase();
+                i++;
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        // END get the target magic items -----------------------------------------
+
+    
+        // Binary Search Tree -----------------------------------------------------
+        BinarySearchTree myBST = new BinarySearchTree();
+        for (i=0; i<magicItems.length; i++) {
+            myBST.insert(magicItems[i]);
+        }
+
+        for (i=0; i<targetMagicItems.length; i++) {
+            myBST.printNodePath(targetMagicItems[i]);
+            myBST.printNumComparisons();
+            System.out.println();
+        }
+
+        myBST.printAvgComparison(targetMagicItems.length);
+        System.out.println();
+
+        // Print an in-order traversal of the tree
+        myBST.inOrderTraversal(myBST.getRoot());
+
+        // END Binary Search Tree --------------------------------------------------
+
+
+        // Undirected Graph --------------------------------------------------------
+
+        // Get the graph file and process graph data
+        file = new File("graphs1.txt");
+        int numGraphs = 0;
+
+        try {
+            // First, count the number of graphs in the file
+            myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                if (myReader.nextLine().contains("new")) {
+                    numGraphs++;
+                }
+            }
+            // Initialize an array of graphs
+            Graph[] graphs = new Graph[numGraphs];
+            System.out.println("\n\n\nNumber of graphs in file: " + numGraphs);
+            myReader.close();
+
+            // Next, process the graph data for each graph
+            myReader = new Scanner(file);
+            i=0;
+            while (i < numGraphs) {
+                if (myReader.nextLine().contains("new")) {
+                    String line = myReader.nextLine();
+                    String verticesStr = "";
+                    while (line.contains("vertex")) {
+                        // Get the vertex id (vid)
+                        String vid = line.substring(line.lastIndexOf(" ") + 1);
+                        // Keep a string of vid data
+                        verticesStr += vid + " ";
+                        line = myReader.nextLine();
+                    }
+
+                    // Create the graph using an array of vid's
+                    String[] verticeArr = verticesStr.split(" ");
+                    graphs[i] = new Graph (verticeArr);
+                    for (int j=0; j<verticeArr.length; j++) {
+                        graphs[i].addVertex(verticeArr[j]);
+                    }
+            
+                    // Create all the edges
+                    while (line.contains("edge")) {
+                        // The line substring with edge data
+                        String edgeStr = line.substring(9);
+
+                        // Get each vid connecting the edge and create the edge
+                        String[] vertices = edgeStr.split(" - ");
+                        String vertex1 = vertices[0];
+                        String vertex2 = vertices[1];
+                        graphs[i].createEdge(vertex1, vertex2);
+
+                        if (myReader.hasNextLine()) {
+                            line = myReader.nextLine();
+                        } else {
+                            break;
+                        }
+                    }
+                    System.out.println("-----------------------------------------------------------------------------");
+                    System.out.println("Graph " + i + ":");
+                    graphs[i].getVertices().print();
+                    System.out.println();
+
+                    System.out.println("Depth-first Traversal:");
+                    graphs[i].DFS(graphs[i].getVertices().getHead());
+                    System.out.println();
+                    System.out.println();
+
+                    // De-process all vertices
+                    graphs[i].resetVerticeProcessStatuses();
+
+                    System.out.println("Breadth-first Traversal:");
+                    graphs[i].BFS(graphs[i].getVertices().getHead());
+                    System.out.println();
+                    System.out.println();
+
+                    graphs[i].getAdjacencyList().print();
+                    System.out.println();
+
+                    graphs[i].getMatrix().print();
+                    System.out.println("-----------------------------------------------------------------------------");
+                    i++;
+                }
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        // END Undirected Graph ----------------------------------------------------
+    }
+}
+\end{minted}
+
+%----------------------------------------------------------------------------------------
+%   end Main
+%----------------------------------------------------------------------------------------
+\end{document}
+

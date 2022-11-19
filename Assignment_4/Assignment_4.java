@@ -6,7 +6,7 @@ class Assignment_4 {
 
     public static void main(String[] args) {
 
-        // Get magic items
+        // Get magic items --------------------------------------------------
         File file = new File("magicitems.txt");
         Scanner myReader = null;
         String[] magicItems = null;
@@ -37,9 +37,10 @@ class Assignment_4 {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        // -------------------------------------------------------------------------------
+        // END get magic items ------------------------------------------------
 
-        // Get the target magic items
+
+        // Get the target magic items -----------------------------------------
         file = new File("magicitems-find-in-bst.txt");
         String[] targetMagicItems = null;
         i = 0;
@@ -69,8 +70,10 @@ class Assignment_4 {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        // -------------------------------------------------------------------------------
-        
+        // END get the target magic items -----------------------------------------
+
+    
+        // Binary Search Tree -----------------------------------------------------
         BinarySearchTree myBST = new BinarySearchTree();
         for (i=0; i<magicItems.length; i++) {
             myBST.insert(magicItems[i]);
@@ -83,7 +86,104 @@ class Assignment_4 {
         }
 
         myBST.printAvgComparison(targetMagicItems.length);
-        // myBST.inOrderTraversal(myBST.getRoot());
+        System.out.println();
+
+        // Print an in-order traversal of the tree
+        myBST.inOrderTraversal(myBST.getRoot());
+
+        // END Binary Search Tree --------------------------------------------------
+
+
+        // Undirected Graph --------------------------------------------------------
+
+        // Get the graph file and process graph data
+        file = new File("graphs1.txt");
+        int numGraphs = 0;
+
+        try {
+            // First, count the number of graphs in the file
+            myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                if (myReader.nextLine().contains("new")) {
+                    numGraphs++;
+                }
+            }
+            // Initialize an array of graphs
+            Graph[] graphs = new Graph[numGraphs];
+            System.out.println("\n\n\nNumber of graphs in file: " + numGraphs);
+            myReader.close();
+
+            // Next, process the graph data for each graph
+            myReader = new Scanner(file);
+            i=0;
+            while (i < numGraphs) {
+                if (myReader.nextLine().contains("new")) {
+                    String line = myReader.nextLine();
+                    String verticesStr = "";
+                    while (line.contains("vertex")) {
+                        // Get the vertex id (vid)
+                        String vid = line.substring(line.lastIndexOf(" ") + 1);
+                        // Keep a string of vid data
+                        verticesStr += vid + " ";
+                        line = myReader.nextLine();
+                    }
+
+                    // Create the graph using an array of vid's
+                    String[] verticeArr = verticesStr.split(" ");
+                    graphs[i] = new Graph (verticeArr);
+                    for (int j=0; j<verticeArr.length; j++) {
+                        graphs[i].addVertex(verticeArr[j]);
+                    }
+            
+                    // Create all the edges
+                    while (line.contains("edge")) {
+                        // The line substring with edge data
+                        String edgeStr = line.substring(9);
+
+                        // Get each vid connecting the edge and create the edge
+                        String[] vertices = edgeStr.split(" - ");
+                        String vertex1 = vertices[0];
+                        String vertex2 = vertices[1];
+                        graphs[i].createEdge(vertex1, vertex2);
+
+                        if (myReader.hasNextLine()) {
+                            line = myReader.nextLine();
+                        } else {
+                            break;
+                        }
+                    }
+                    System.out.println("-----------------------------------------------------------------------------");
+                    System.out.println("Graph " + i + ":");
+                    graphs[i].getVertices().print();
+                    System.out.println();
+
+                    System.out.println("Depth-first Traversal:");
+                    graphs[i].DFS(graphs[i].getVertices().getHead());
+                    System.out.println();
+                    System.out.println();
+
+                    // De-process all vertices
+                    graphs[i].resetVerticeProcessStatuses();
+
+                    System.out.println("Breadth-first Traversal:");
+                    graphs[i].BFS(graphs[i].getVertices().getHead());
+                    System.out.println();
+                    System.out.println();
+
+                    graphs[i].getAdjacencyList().print();
+                    System.out.println();
+
+                    graphs[i].getMatrix().print();
+                    System.out.println("-----------------------------------------------------------------------------");
+                    i++;
+                }
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        // END Undirected Graph ----------------------------------------------------
 
 
 
@@ -91,7 +191,21 @@ class Assignment_4 {
 
 
 
-/*      // test file
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // test file
+        /* 
         file = new File("test.txt");
         myReader = null;
         String[] testItems = null;
