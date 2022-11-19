@@ -16,9 +16,13 @@ class LinkedList {
             // If the list is empty, set the head
             this.head = newVertex;
         } else {
-            // New elements are added to the top of the list
-            newVertex.setNext(this.head);
-            this.head = newVertex;
+            // Otherwise traverse entire list and add newVertex to the end
+            Vertex lastVertex = this.head;
+            while (lastVertex.getNext() != null) {
+                lastVertex = lastVertex.getNext();
+            }
+
+            lastVertex.setNext(newVertex);
         }
         //increment length
         this.length++;
@@ -47,7 +51,7 @@ class LinkedList {
         this.length--;
     } // remove
 
-    public Vertex getVertexByID(int targetIndex) {
+    public Vertex getVertexAt(int targetIndex) {
         Vertex res = null;
         Vertex currVertex = this.head;
         int i = 0;
@@ -61,6 +65,22 @@ class LinkedList {
             // Set the new next
             currVertex = currVertex.getNext();
             i++;
+        }
+        return res;
+    }
+
+    public Vertex getVertexByID(String vid) {
+        Vertex res = null;
+        Vertex currVertex = this.head;
+
+        while (currVertex != null) {
+            if (currVertex.getID().compareTo(vid) == 0) {
+                res = currVertex;
+                break;
+            }
+
+            // Set the new next
+            currVertex = currVertex.getNext();
         }
         return res;
     }

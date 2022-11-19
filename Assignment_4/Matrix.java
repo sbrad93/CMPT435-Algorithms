@@ -32,10 +32,6 @@ class Matrix {
 
     // Prints the matrix array in matrix format
     public void print() {
-        System.out.print(" ".repeat(2));
-        for (int v=0; v<this.verticeArr.length; v++) {
-            System.out.print(this.verticeArr[v] + " ");
-        }
         System.out.println();
         for (int i=0; i<this.matrixArr.length; i++) {
             System.out.print(this.verticeArr[i] + " ");

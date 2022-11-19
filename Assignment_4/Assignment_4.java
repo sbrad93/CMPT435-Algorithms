@@ -80,15 +80,16 @@ class Assignment_4 {
         }
 
         for (i=0; i<targetMagicItems.length; i++) {
-            // myBST.printNodePath(targetMagicItems[i]);
-            // myBST.printNumComparisons();
-            // System.out.println();
+            myBST.printNodePath(targetMagicItems[i]);
+            myBST.printNumComparisons();
+            System.out.println();
         }
 
-        // myBST.printAvgComparison(targetMagicItems.length);
+        myBST.printAvgComparison(targetMagicItems.length);
+        System.out.println();
 
         // Print an in-order traversal of the tree
-        // myBST.inOrderTraversal(myBST.getRoot());
+        myBST.inOrderTraversal(myBST.getRoot());
 
         // END Binary Search Tree --------------------------------------------------
 
@@ -109,7 +110,7 @@ class Assignment_4 {
             }
             // Initialize an array of graphs
             Graph[] graphs = new Graph[numGraphs];
-            System.out.println("Number of graphs in file: " + numGraphs);
+            System.out.println("\n\n\nNumber of graphs in file: " + numGraphs);
             myReader.close();
 
             // Next, process the graph data for each graph
@@ -130,7 +131,7 @@ class Assignment_4 {
                     // Create the graph using an array of vid's
                     String[] verticeArr = verticesStr.split(" ");
                     graphs[i] = new Graph (verticeArr);
-                    for (int j=verticeArr.length-1; j>=0; j--) {
+                    for (int j=0; j<verticeArr.length; j++) {
                         graphs[i].addVertex(verticeArr[j]);
                     }
             
@@ -151,13 +152,29 @@ class Assignment_4 {
                             break;
                         }
                     }
-                    System.out.println("--------------------------------");
+                    System.out.println("-----------------------------------------------------------------------------");
+                    System.out.println("Graph " + i + ":");
                     graphs[i].getVertices().print();
                     System.out.println();
+
+                    System.out.println("Depth-first Traversal:");
+                    graphs[i].DFS(graphs[i].getVertices().getHead());
+                    System.out.println();
+                    System.out.println();
+
+                    // De-process all vertices
+                    graphs[i].resetVerticeProcessStatuses();
+
+                    System.out.println("Breadth-first Traversal:");
+                    graphs[i].BFS(graphs[i].getVertices().getHead());
+                    System.out.println();
+                    System.out.println();
+
                     graphs[i].getAdjacencyList().print();
                     System.out.println();
+
                     graphs[i].getMatrix().print();
-                    System.out.println("--------------------------------");
+                    System.out.println("-----------------------------------------------------------------------------");
                     i++;
                 }
             }
@@ -166,8 +183,6 @@ class Assignment_4 {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-
-
         // END Undirected Graph ----------------------------------------------------
 
 

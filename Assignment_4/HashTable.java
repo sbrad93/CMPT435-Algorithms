@@ -19,7 +19,7 @@ class HashTable {
         boolean res = false;
         int i = 0;
         while (i<this.hashTable[code].getSize()) {
-            if (this.hashTable[code].getVertexByID(i).getID().compareTo(element) == 0) {
+            if (this.hashTable[code].getVertexAt(i).getID().compareTo(element) == 0) {
                 res = true;
                 break;
             }

@@ -87,7 +87,7 @@ class BinarySearchTree {
 
     // Print the average number of comparisons after a given number of searches
     public void printAvgComparison(int total) {
-        System.out.printf("\nAverage Number of Comparisons:  %.2f %n", this.totalComparisons/total);
+        System.out.printf("Average Number of Comparisons:  %.2f %n", this.totalComparisons/total);
     }
 
     /* Getters and Setters */

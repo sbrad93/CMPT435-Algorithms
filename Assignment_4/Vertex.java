@@ -1,8 +1,8 @@
 class Vertex {
 
+    public boolean isProcessed = false;
     private String id = "";
     private Vertex next = null;
-    private boolean isProcessed = false;
     private LinkedList neighbors = null;
 
     /* Vertex class constructor */
@@ -11,10 +11,6 @@ class Vertex {
         this.next = null;
         this.isProcessed = false;
         this.neighbors = new LinkedList();
-    } 
-
-    public boolean isProcessed() {
-        return this.isProcessed;
     }
 
     /* Getters and Setters */
