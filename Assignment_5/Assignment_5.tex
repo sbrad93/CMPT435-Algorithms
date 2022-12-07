@@ -1,0 +1,718 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CMPT 435
+% Fall 2022
+% Assignment 5
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from: http://www.LaTeXTemplates.com
+% Original author: % Frits Wenneker (http://www.howtotex.com)
+% License: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% Modified by Alan G. Labouseur  - alan@labouseur.com
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[letterpaper, 10pt,DIV=13]{scrartcl} 
+\usepackage{minted}
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm,xfrac} % Math packages
+\usepackage{sectsty} % Allows customizing section commands
+\usepackage{graphicx}
+\usepackage[lined,linesnumbered,commentsnumbered]{algorithm2e}
+\usepackage{listings}
+\usepackage{parskip}
+\usepackage{lastpage}
+
+\allsectionsfont{\normalfont\scshape} % Make all section titles in default font and small caps.
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{page \thepage\ of \pageref{LastPage}} % Page numbering for right footer
+
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs.
+
+\binoppenalty=3000
+\relpenalty=3000
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+   \normalfont \normalsize 
+   \textsc{CMPT 435 - Fall 2022 - Dr. Labouseur} \\[10pt] % Header stuff.
+   \horrule{0.5pt} \\[0.25cm] 	     % Top horizontal rule
+   \huge Assignment Five  \\     	 % Assignment title
+   \horrule{0.5pt} \\[0.25cm] 	     % Bottom horizontal rule
+}
+
+\author{Shannon Brady \\ \normalsize shannon.brady2@Marist.edu}
+
+\date{\normalsize\today} 	% Today's date.
+
+\begin{document}
+\maketitle % Print the title
+
+%----------------------------------------------------------------------------------------
+%   start Assignment_5
+%----------------------------------------------------------------------------------------
+\section{Assignment 5}
+\subsection{Directed and Weighted Graphs}
+\begin{enumerate}
+    \item Line 15-26: Count the number of graphs in the input file and initialize an array of graphs.
+    \item Line 29-70: Initialize all vertices and edges for each graph in the file.
+    item Line 73-78: Complete the Bellman-Ford Algorithm to find the Single Shortest Path (SSSP) for each graph.
+    \item Running Time Analysis: The asymptotic running time of SSSP is O(V*E), where V is the number of vertices within the graph and E is the number of edges. This is due to the fact that all edges will be traversed and relaxed for each vertex.
+\end{enumerate}
+\subsection{Fractional Knapsack}
+\begin{enumerate}
+    \item Line 98-115: Count the number of spices and knapsacks in the input file. Initialize and array of spices and an array of knapsacks.
+    \item Line 124-161: Create spice and knapsack objects and add them to their respective arrays.
+    \item: Line 170-171: Sort the spices by unit price (high to low).
+    \item Line 173-183: For each knapsack, add scoops of spices until the knapsack reaches capacity or the spice has no more scoops remaining.
+    \item Running Time Analysis: Given that the spices were sorted using Insertion Sort, the running time of this implementation of fractional knapsack (for each knapsack) is roughly $O(n^2 + n)$, where $O(n^2)$ represents the complexity of Insertion sort and O(n) represents the time complexity of traversing the spice array. Since the highest degree is most relevant when considering asymptotic running time, the overall time complexity is $O(n^2)$.
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+class Assignment_5 {
+
+    public static void main(String[] args) {
+
+        // 1) Directed and Weighted Graphs --------------------------------------------------------
+
+        // Get the graph file and process graph data
+        File file = new File("graphs.txt");
+        int numGraphs = 0;
+
+        try {
+            // First, count the number of graphs in the file
+            Scanner myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                if (myReader.nextLine().contains("new")) {
+                    numGraphs++;
+                }
+            }
+            // Initialize an array of graphs
+            Graph[] graphs = new Graph[numGraphs];
+            System.out.println("Number of graphs in file: " + numGraphs);
+            myReader.close();
+
+            // Next, process the graph data for each graph
+            myReader = new Scanner(file);
+            int i=0;
+            while (i < numGraphs) {
+                if (myReader.nextLine().contains("new")) {
+                    String line = myReader.nextLine();
+                    String verticesStr = "";
+                    while (line.contains("vertex")) {
+                        // Get the vertex id (vid)
+                        String vid = line.substring(line.lastIndexOf(" ") + 1);
+                        // Keep a string of vid data
+                        verticesStr += vid + " ";
+                        line = myReader.nextLine();
+                    }
+
+                    // Create the graph using an array of vid's
+                    String[] verticeArr = verticesStr.split(" ");
+                    graphs[i] = new Graph (verticeArr);
+                    for (int j=0; j<verticeArr.length; j++) {
+                        graphs[i].addVertex(verticeArr[j]);
+                    }
+            
+                    // Create all the edges
+                    while (line.contains("edge")) {
+                        // The line substring with edge data
+                        String edgeStr = line.substring(9);
+
+                        // The edgeStr substring with vertice data
+                        String verticeStr = edgeStr.substring(0, edgeStr.lastIndexOf(" "));
+                        String weight = edgeStr.substring(edgeStr.lastIndexOf(" ") + 1);
+
+                        // Get each vid connecting the edge and create the edge
+                        String[] vertices = verticeStr.split(" - ");
+                        String vertex1 = vertices[0].trim();
+                        String vertex2 = vertices[1].trim();
+                        graphs[i].createEdge(vertex1, vertex2, Integer.parseInt(weight));
+
+                        if (myReader.hasNextLine()) {
+                            line = myReader.nextLine();
+                        } else {
+                            break;
+                        }
+                    }
+                    System.out.println("-----------------------------------------------------------------------------");
+                    System.out.println("Graph " + i + ":");
+                    boolean isValid = graphs[i].bellmanFord();
+                    if (isValid) {
+                        graphs[i].getResults();
+                    } else {
+                        System.out.print("not valid :(");
+                    }
+                    i++;
+                    System.out.println("-----------------------------------------------------------------------------");
+                }
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        // END Directed and Weighted Graphs -------------------------------------------------------------------------
+
+
+
+
+        // 2) Greedy Algorithms - Spice Heist ----------------------------------------------------------------------
+        file = new File("spice.txt");
+        int numSpices = 0;
+        int numKnapsacks = 0;
+
+        try {
+            Scanner myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                if (data.startsWith("spice")) {
+                    numSpices++;
+                } else if (data.startsWith("knapsack")) {
+                    numKnapsacks++;
+                }
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    
+        Spice[] spices = new Spice[numSpices];
+        Knapsack[] knapsacks = new Knapsack[numKnapsacks];
+
+        try {
+            Scanner myReader = new Scanner(file);
+            int i = 0;
+            while(myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+
+                // initialize an array of spices
+                if (data.startsWith("spice")) {
+                    while (i < numSpices) {
+                        // 1. get substring after 'spice'
+                        // 2. remove whitespace
+                        // 3. split at ';'
+                        String[] spiceData = data.substring(6).replaceAll("\\s", "").split(";");
+                        if (spiceData.length == 3) { // color, total price, quantity
+                            String color = spiceData[0].split("=")[1];
+                            String totalPrice = spiceData[1].split("=")[1];
+                            String quantity = spiceData[2].split("=")[1];
+                            Spice spice = new Spice(color, Float.parseFloat(totalPrice), Integer.parseInt(quantity));
+                            spices[i] = spice;
+                        }
+                        data = myReader.nextLine();
+                        i++;
+                    }
+                  // initialize an array of knapsacks
+                } else if (data.startsWith("knapsack")) {
+                    i = 0;
+                    while (i<numKnapsacks) {
+                        // 1. get substring after 'knapsack'
+                        // 2. remove whitespace
+                        // 3. split at ';'
+                        String[] knapsackData = data.substring(9).replaceAll("\\s", "").split(";");
+                        if (knapsackData.length == 1) { // capacity
+                            String capacity = knapsackData[0].split("=")[1];
+                            Knapsack knapsack = new Knapsack(Integer.parseInt(capacity));
+                            knapsacks[i] = knapsack;
+                        }
+                        // check there is another line, otherwise break
+                        if (myReader.hasNextLine()) {
+                            data = myReader.nextLine();
+                        } else {
+                            break;
+                        }
+                        i++;
+                    }
+                }
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+       
+        // sort the spices by unit price, high to low
+        InsertionSort insertionSortObj = new InsertionSort();
+        insertionSortObj.sort(spices);
+
+        for (int i=0; i<knapsacks.length; i++) {
+            for (int j=0; j<spices.length; j++) {
+                int remaining = spices[j].getQuantity();
+                // add a given spice until the knapsack is full or a spice has no more scoops remaining
+                while (!knapsacks[i].isFull() && remaining != 0) {
+                    knapsacks[i].fill(spices[j]);
+                    remaining--;
+                }
+            }
+            knapsacks[i].print();
+        }
+        // END Spice Heist ------------------------------------------------
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Assignment_5
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%   start Directed and Weighted Graphs
+%----------------------------------------------------------------------------------------
+\section{Directed and Weighted Graphs}
+\begin{enumerate}
+    \item The Graph class is used to implement directed and weight graphs and has the following attributes:
+    \begin{enumerate}
+        \item vertices: A linked list of all vertices within the graph
+        \item edges: An ArrayList of Edges used to represent all edges within the graph
+    \end{enumerate}
+    \item Line 13-15: Method that adds a vertex to the vertices list
+    \item Line 14-26: Method that creates a graph edge and adds it to the list of edges
+    \item Line 29-46: Method that implements the Bellman-Ford Algorithm to find the Single Source Shortest Path (SSSP).
+    \begin{enumerate}
+        \item Line 30-34: For each vertex, relax all of the edges within the graph.
+        \item Line 36-44: Check that there are no negative weight cycles within the graph.
+    \end{enumerate}
+    \item Line 48-59: Method that is used to update an edge distance if a shorter path exists.
+    \begin{enumerate}
+        \item Line 54-57: Set the new distance and predecessor vertex. Apply these changes to all occurrences of this given vertex throughout all graph edges.
+        \item Line 62-81: Methods used to apply all changes to a given vertex to all occurrences of said vertex throughout the graph edges.
+        \item Line 84-127: Method used to print the final SSSP.
+        \begin{enumerate}
+            \item Line 85-99: Find a single occurrence of each graph vertex and add to the results ArrayList. These are the Vertex objects that hold the final SSSP results.
+            \item Line 102-116: Loop through the resulting vertex objects. If the current vertex is not the single source, build the path from the given vertex to the single source by traversing through the previous vertices.
+            \item Line 117-126: Print the path in the correct order.
+        \end{enumerate}
+    \end{enumerate}
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+import java.util.ArrayList;
+
+class Graph {
+
+    private VertexLinkedList vertices = null;
+    private ArrayList<Edge> edges = null;
+
+    Graph(String[] verticeArr) {
+        this.vertices = new VertexLinkedList();
+        this.edges = new ArrayList<Edge>();
+    }
+
+    public void addVertex(String vid) {
+        this.vertices.add(vid);
+    }
+
+    // Creates an edge between two vertices
+    public void createEdge(String vid1, String vid2, int weight) {
+        Vertex vertex1 = this.vertices.getVertexByID(vid1);
+        Vertex vertex2 = this.vertices.getVertexByID(vid2);
+        vertex1.getNeighbors().add(vid2);
+        vertex2.getNeighbors().add(vid1);
+        
+        Edge edge = new Edge(vertex1, vertex2, weight);
+        this.edges.add(edge);
+    }
+
+    // Bellman-Ford Algorithm, returns boolean indicating if valid
+    public boolean bellmanFord() {
+        for (int k=0; k<this.vertices.getSize()-1; k++) {
+            for (int i=0; i<this.edges.size(); i++) {
+                this.relax(this.edges.get(i));
+            }
+        }
+
+        for (int i=0; i<this.edges.size(); i++) {
+            Vertex v1 = this.edges.get(i).getVertices().getVertexAt(0);
+            Vertex v2 = this.edges.get(i).getVertices().getVertexAt(1);
+            int weight = this.edges.get(i).getWeight();
+
+            if (v2.getDistance() > v1.getDistance() + weight) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void relax(Edge edge) {
+        Vertex v1 = edge.getVertices().getVertexAt(0);
+        Vertex v2 = edge.getVertices().getVertexAt(1);
+        int weight = edge.getWeight();
+
+        if (v1.getDistance() != Integer.MAX_VALUE && v2.getDistance() > v1.getDistance() + weight) {
+            v2.setDistance(v1.getDistance() + weight);
+            this.updateDistance(v2, v1.getDistance() + weight);
+            v2.setPrev(v1);
+            this.updatePrev(v2, v1);
+        }
+    }
+
+    // Ensures that distances are consistent throughout all occurances of a given vertex
+    public void updateDistance(Vertex v, int distance) {
+        for (int i=0; i<this.edges.size(); i++) {
+            for (int j=0; j<this.edges.get(i).getVertices().getSize(); j++) {
+                if (this.edges.get(i).getVertices().getVertexAt(j).getID().compareTo(v.getID()) == 0) {
+                    this.edges.get(i).getVertices().getVertexAt(j).setDistance(distance);
+                }
+            }
+        }
+    }
+
+    // Ensures that prev vertices are consistent throughout all occurances of a given vertex
+    public void updatePrev(Vertex v, Vertex prev) {
+        for (int i=0; i<this.edges.size(); i++) {
+            for (int j=0; j<this.edges.get(i).getVertices().getSize(); j++) {
+                if (this.edges.get(i).getVertices().getVertexAt(j).getID().compareTo(v.getID()) == 0) {
+                    this.edges.get(i).getVertices().getVertexAt(j).setPrev(prev);
+                }
+            }
+        }
+    }
+
+    // Prints the final results
+    public void getResults() {
+        ArrayList<Vertex> results = new ArrayList<Vertex>();
+        for (int k=0; k<this.vertices.getSize(); k++) {
+            edgeSearch:
+            for (int i=0; i<this.edges.size(); i++) {
+                for (int j=0; j<this.edges.get(i).getVertices().getSize(); j++) {
+                    // Find the first occurance of an edge vertex that exists in the vertices list
+                    // Add that vertex to a results list for printing later
+                    if (this.edges.get(i).getVertices().getVertexAt(j).getID().compareTo(this.vertices.getVertexAt(k).getID()) == 0) {
+                        Vertex vertex = this.edges.get(i).getVertices().getVertexAt(j);
+                        results.add(vertex);
+                        break edgeSearch;
+                    }
+                }
+            }
+        }
+
+        for (int i=0; i<results.size(); i++) {
+            ArrayList<Vertex> path = new ArrayList<Vertex>();
+            if (!results.get(i).isSrc()) {
+                Vertex start = results.get(i);
+                path.add(start);
+
+                System.out.print("1 --> " + start.getID() + "; ");
+                System.out.print("cost is " + start.getDistance() + "; ");
+                System.out.print("path is ");
+                
+                Vertex prev = results.get(i).getPrev();
+                while (prev != null) {
+                    path.add(prev);
+                    prev = prev.getPrev();
+                }
+            }
+            for (int j=path.size()-1; j>=0; j--) {
+                if (j != 0) {
+                    System.out.print(path.get(j).getID() + " --> ");
+                } else {
+                    System.out.print(path.get(j).getID());
+                }
+            }
+            System.out.println();
+            System.out.println();
+        }
+    }
+
+    public void print() {
+        for (int i=0; i<this.edges.size(); i++) {
+            this.edges.get(i).print();
+        }
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Directed and Weighted Graphs
+%----------------------------------------------------------------------------------------
+
+
+%----------------------------------------------------------------------------------------
+%   start Edge
+%----------------------------------------------------------------------------------------
+\section{Edge}
+\begin{enumerate}
+    \item The Edge class is used to represent an edge within a graph. Each instance has the following attributes:
+    \begin{enumerate}
+        \item vertices: A linked list of vertices
+        \item weight: An int representing the weight value associated with each edge
+    \end{enumerate}
+    \item Line 16-26: Initialize all distances for each non-single-source vertex to a maximum value (representing infinity). Single source vertices get initialized to 0.
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class Edge {
+
+    private VertexLinkedList vertices = null;
+    private int weight = 0;
+
+    public Edge(Vertex vertex1, Vertex vertex2, int _weight) {
+        this.vertices = new VertexLinkedList();
+        this.vertices.add(vertex1.getID());
+        this.vertices.add(vertex2.getID());
+        this.weight = _weight;
+        this.distanceInit();
+    }
+
+    // Initalize all non-source distances to max int
+    // Source diatnace get intialized to 0
+    public void distanceInit() {
+        for (int i=0; i<this.vertices.getSize(); i++) {
+            if (this.vertices.getVertexAt(i).getID().compareTo("1") == 0) {
+                this.vertices.getVertexAt(i).setDistance(0);
+                this.vertices.getVertexAt(i).setSrc(true);
+
+            } else {
+                this.vertices.getVertexAt(i).setDistance(Integer.MAX_VALUE);
+            }
+        }
+    }
+
+    public void print() {
+        for (int i=0; i<this.vertices.getSize(); i++) {
+            this.vertices.getVertexAt(i).print();
+            System.out.println();
+        }
+        System.out.println();
+        System.out.println("weight: " + weight);
+        System.out.println();
+        System.out.println("-----------------");
+        System.out.println();
+    }
+
+    public VertexLinkedList getVertices() {
+        return this.vertices;
+    }
+
+    public int getWeight() {
+        return this.weight;
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Edge
+%----------------------------------------------------------------------------------------
+
+
+%----------------------------------------------------------------------------------------
+%   start Knapsack
+%----------------------------------------------------------------------------------------
+\section{Knapsack}
+\begin{enumerate}
+    \item A Knapsack has the following attributes:
+    \begin{enumerate}
+        \item capacity: An integer value representing the capacity of the knapsack
+        \item contents: A linked list a spices
+        \item value: A float value representing the total value of all contents within the knapsack
+    \end{enumerate}
+    \item Line 23-49: Method that counts the number of each spice within the knapsack.
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+import java.text.DecimalFormat;
+
+class Knapsack {
+
+    private static final DecimalFormat df = new DecimalFormat("0.00");
+
+    private int capacity = 0;
+    private LinkedList contents = null;
+    private float value = 0;
+
+    public Knapsack(int _capacity) {
+        this.capacity = _capacity;
+        this.contents = new LinkedList();
+        this.value = 0;
+    }
+
+    public void print() {
+        System.out.println("Knapsack of capacity " + this.capacity + 
+                            " is worth " + df.format(this.value) + " Simoleons" + 
+                            " and contains\n" + this.getContents());
+    }
+
+    public String getContents() {
+        int orangeCnt = 0;
+        int blueCnt = 0;
+        int greeCnt = 0;
+        int redCnt = 0;
+        for (int i=0; i<this.contents.getSize(); i++) {
+            switch (this.contents.getAt(i).getName()) {
+                case "orange":
+                orangeCnt++;
+                    break;
+                case "blue":
+                    blueCnt++;
+                    break;
+                case "green":
+                    greeCnt++;
+                    break;
+                case "red":
+                    redCnt++;
+                    break;
+            }
+        }
+        String contents = (orangeCnt != 0 ? orangeCnt + " scoops of orange\n" : "") +
+                            (blueCnt != 0 ? blueCnt + " scoops of blue\n" : "") +
+                            (greeCnt != 0 ? greeCnt + " scoops of green\n" : "") +
+                            (redCnt != 0 ? redCnt + " scoops of red\n" : "");
+        return contents;
+    }
+
+    public boolean isFull() {
+        return this.capacity == this.contents.getSize();
+    }
+
+    public void fill(Spice spice) {
+        this.contents.add(spice.getColor());
+        this.updateValue(spice);
+    }
+
+    public void updateValue(Spice spice) {
+        this.value += spice.getUnitPrice();
+    }
+
+    public float getValue() {
+        return this.value;
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Knapsack
+%----------------------------------------------------------------------------------------
+
+
+%----------------------------------------------------------------------------------------
+%   start Spice
+%----------------------------------------------------------------------------------------
+\section{Spice}
+\begin{enumerate}
+    \item A Spice has the following attributes:
+    \begin{enumerate}
+        \item color: the color of the spice
+        \item totalPrice: The total price associated with the entire spice quantity
+        \item quantity: The total number of scoops allocated to the spice
+        \item unitPrice: The price of each scoop
+    \end{enumerate}
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class Spice {
+
+    private String color = null;
+    private float totalPrice = 0;
+    private int quantity = 0;
+    private float unitPrice = 0;
+
+    public Spice(String _color, float _totalPrice, int _quantity) {
+        this.color = _color;
+        this.totalPrice = _totalPrice;
+        this.quantity = _quantity;
+        this.unitPrice = _totalPrice / _quantity;
+    }
+
+    public void print() {
+        System.out.println("color: " + this.color + 
+                            "\ntotal price: " + this.totalPrice + 
+                            "\nquantity: " + this.quantity + 
+                            "\nunit price: " + this.unitPrice + "\n");
+    }
+
+    public String getColor() {
+        return this.color;
+    }
+
+    public float getTotalPrice() {
+        return this.totalPrice;
+    }
+
+    public int getQuantity() {
+        return this.quantity;
+    }
+
+    public float getUnitPrice() {
+        return this.unitPrice;
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Spice
+%----------------------------------------------------------------------------------------
+
+\end{document}
+
