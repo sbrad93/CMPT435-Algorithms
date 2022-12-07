@@ -52,11 +52,9 @@ class Assignment_5 {
                         // The line substring with edge data
                         String edgeStr = line.substring(9);
 
+                        // The edgeStr substring with vertice data
                         String verticeStr = edgeStr.substring(0, edgeStr.lastIndexOf(" "));
-                        // System.out.println(verticeStr);
-
                         String weight = edgeStr.substring(edgeStr.lastIndexOf(" ") + 1);
-                        // System.out.println(weight);
 
                         // Get each vid connecting the edge and create the edge
                         String[] vertices = verticeStr.split(" - ");
@@ -72,19 +70,14 @@ class Assignment_5 {
                     }
                     System.out.println("-----------------------------------------------------------------------------");
                     System.out.println("Graph " + i + ":");
-                    
-                    System.out.println();
                     boolean isValid = graphs[i].bellmanFord();
                     if (isValid) {
-                        System.out.println("valid!!");
-                        // graphs[i].print();
+                        graphs[i].getResults();
                     } else {
-                        System.out.println("not valid babbyyy");
-                        // graphs[i].print();
+                        System.out.print("not valid :(");
                     }
-                   
-                    // graphs[i].getVertices().print();
                     i++;
+                    System.out.println("-----------------------------------------------------------------------------");
                 }
             }
             myReader.close();
@@ -186,7 +179,7 @@ class Assignment_5 {
                     remaining--;
                 }
             }
-            // knapsacks[i].print();
+            knapsacks[i].print();
         }
         // END Spice Heist ------------------------------------------------
     }

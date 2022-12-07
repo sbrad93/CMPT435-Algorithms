@@ -1,4 +1,8 @@
+import java.text.DecimalFormat;
+
 class Knapsack {
+
+    private static final DecimalFormat df = new DecimalFormat("0.00");
 
     private int capacity = 0;
     private LinkedList contents = null;
@@ -12,7 +16,7 @@ class Knapsack {
 
     public void print() {
         System.out.println("Knapsack of capacity " + this.capacity + 
-                            " is worth " + this.value + 
+                            " is worth " + df.format(this.value) + " Simoleons" + 
                             " and contains\n" + this.getContents());
     }
 

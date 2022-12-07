@@ -11,10 +11,14 @@ class Edge {
         this.distanceInit();
     }
 
+    // Initalize all non-source distances to max int
+    // Source diatnace get intialized to 0
     public void distanceInit() {
         for (int i=0; i<this.vertices.getSize(); i++) {
             if (this.vertices.getVertexAt(i).getID().compareTo("1") == 0) {
                 this.vertices.getVertexAt(i).setDistance(0);
+                this.vertices.getVertexAt(i).setSrc(true);
+
             } else {
                 this.vertices.getVertexAt(i).setDistance(Integer.MAX_VALUE);
             }

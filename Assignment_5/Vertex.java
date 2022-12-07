@@ -5,7 +5,6 @@ class Vertex {
     private Vertex next = null;
     private Vertex prev = null;
     private boolean isSrc = false;
-    private boolean isProcessed = false;
     private VertexLinkedList neighbors = null;
 
     /* Vertex class constructor */
@@ -15,7 +14,6 @@ class Vertex {
         this.next = null;
         this.prev = null;
         this.isSrc = false;
-        this.isProcessed = false;
         this.neighbors = new VertexLinkedList();
     }
 
@@ -27,6 +25,10 @@ class Vertex {
         } else {
             System.out.println("Prev: " + this.prev);
         }
+    }
+
+    public boolean isSrc() {
+        return this.isSrc;
     }
 
     /* Getters and Setters */
@@ -62,19 +64,11 @@ class Vertex {
         this.distance = newDist;
     } // setDistance
 
-    public void setProcessed(boolean bool) {
-        this.isProcessed = bool;
-    }
+    public void setSrc(boolean bool) {
+        this.isSrc = bool;
+    } // setSrc
 
     public VertexLinkedList getNeighbors() {
         return this.neighbors;
     } // getNeighbors
-
-    public boolean isSrc() {
-        return this.isSrc;
-    }
-
-    public boolean isProcessed() {
-        return this.isProcessed;
-    }
 }

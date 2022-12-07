@@ -14,7 +14,7 @@ class Graph {
         this.vertices.add(vid);
     }
 
-    // Create an edge between two vertices
+    // Creates an edge between two vertices
     public void createEdge(String vid1, String vid2, int weight) {
         Vertex vertex1 = this.vertices.getVertexByID(vid1);
         Vertex vertex2 = this.vertices.getVertexByID(vid2);
@@ -25,19 +25,14 @@ class Graph {
         this.edges.add(edge);
     }
 
-    public VertexLinkedList getVertices() {
-        return this.vertices;
-    }
-
+    // Bellman-Ford Algorithm, returns boolean indicating if valid
     public boolean bellmanFord() {
         for (int k=0; k<this.vertices.getSize()-1; k++) {
             for (int i=0; i<this.edges.size(); i++) {
                 this.relax(this.edges.get(i));
             }
-            // // for (int i=0; i<this.edges.size(); i++) {
-            //     this.relax(this.edges.get(0));
-            // // }
         }
+
         for (int i=0; i<this.edges.size(); i++) {
             Vertex v1 = this.edges.get(i).getVertices().getVertexAt(0);
             Vertex v2 = this.edges.get(i).getVertices().getVertexAt(1);
@@ -47,7 +42,6 @@ class Graph {
                 return false;
             }
         }
-        this.updateVertices();
         return true;
     }
 
@@ -56,60 +50,79 @@ class Graph {
         Vertex v2 = edge.getVertices().getVertexAt(1);
         int weight = edge.getWeight();
 
-        // System.out.println("Before");
-        // System.out.println(v1.getID() + " : " + v1.getDistance());
-        // System.out.println(v2.getID() + " : " + v2.getDistance());
-        // System.out.println("weight: " + weight);
-
         if (v1.getDistance() != Integer.MAX_VALUE && v2.getDistance() > v1.getDistance() + weight) {
             v2.setDistance(v1.getDistance() + weight);
             this.updateDistance(v2, v1.getDistance() + weight);
             v2.setPrev(v1);
             this.updatePrev(v2, v1);
         }
-
-        // System.out.println("After");
-        // System.out.println(v1.getID() + " : " + v1.getDistance());
-        // System.out.println(v2.getID() + " : " + v2.getDistance());
-        // System.out.println();
     }
 
+    // Ensures that distances are consistent throughout all occurances of a given vertex
     public void updateDistance(Vertex v, int distance) {
-        // System.out.println("updating to distance: " + distance);
         for (int i=0; i<this.edges.size(); i++) {
             for (int j=0; j<this.edges.get(i).getVertices().getSize(); j++) {
                 if (this.edges.get(i).getVertices().getVertexAt(j).getID().compareTo(v.getID()) == 0) {
-                    // System.out.println("hi");
                     this.edges.get(i).getVertices().getVertexAt(j).setDistance(distance);
                 }
             }
         }
     }
 
+    // Ensures that prev vertices are consistent throughout all occurances of a given vertex
     public void updatePrev(Vertex v, Vertex prev) {
         for (int i=0; i<this.edges.size(); i++) {
             for (int j=0; j<this.edges.get(i).getVertices().getSize(); j++) {
                 if (this.edges.get(i).getVertices().getVertexAt(j).getID().compareTo(v.getID()) == 0) {
-                    // System.out.println("hi");
                     this.edges.get(i).getVertices().getVertexAt(j).setPrev(prev);
                 }
             }
         }
     }
 
-    public void updateVertices() {
-        // VertexLinkedList temp = new VertexLinkedList();
+    // Prints the final results
+    public void getResults() {
+        ArrayList<Vertex> results = new ArrayList<Vertex>();
         for (int k=0; k<this.vertices.getSize(); k++) {
             edgeSearch:
             for (int i=0; i<this.edges.size(); i++) {
                 for (int j=0; j<this.edges.get(i).getVertices().getSize(); j++) {
+                    // Find the first occurance of an edge vertex that exists in the vertices list
+                    // Add that vertex to a results list for printing later
                     if (this.edges.get(i).getVertices().getVertexAt(j).getID().compareTo(this.vertices.getVertexAt(k).getID()) == 0) {
-                        this.edges.get(i).getVertices().getVertexAt(j).print();
-                        System.out.println();
+                        Vertex vertex = this.edges.get(i).getVertices().getVertexAt(j);
+                        results.add(vertex);
                         break edgeSearch;
                     }
                 }
             }
+        }
+
+        for (int i=0; i<results.size(); i++) {
+            ArrayList<Vertex> path = new ArrayList<Vertex>();
+            if (!results.get(i).isSrc()) {
+                Vertex start = results.get(i);
+                path.add(start);
+
+                System.out.print("1 --> " + start.getID() + "; ");
+                System.out.print("cost is " + start.getDistance() + "; ");
+                System.out.print("path is ");
+                
+                Vertex prev = results.get(i).getPrev();
+                while (prev != null) {
+                    path.add(prev);
+                    prev = prev.getPrev();
+                }
+            }
+            for (int j=path.size()-1; j>=0; j--) {
+                if (j != 0) {
+                    System.out.print(path.get(j).getID() + " --> ");
+                } else {
+                    System.out.print(path.get(j).getID());
+                }
+            }
+            System.out.println();
+            System.out.println();
         }
     }
 
@@ -117,13 +130,5 @@ class Graph {
         for (int i=0; i<this.edges.size(); i++) {
             this.edges.get(i).print();
         }
-    }
-
-    public String getResults() {
-        String res = "";
-        for (int i=0; i<this.vertices.getSize(); i++) {
-            this.vertices.getVertexAt(i).print();
-        }
-        return res;
     }
 }

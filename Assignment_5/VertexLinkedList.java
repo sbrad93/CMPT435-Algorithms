@@ -3,11 +3,11 @@ class VertexLinkedList {
     private Vertex head = null;
     private int length = 0;
 
-    /* LinkedList class constructor */
+    /* VertexLinkedList class constructor */
     VertexLinkedList() {
         this.head = null;
         this.length = 0;
-    } // LinkedList
+    } // VertexLinkedList
 
     public void add(String str) {
         Vertex newVertex = new Vertex(str);
@@ -111,7 +111,7 @@ class VertexLinkedList {
     } // isEmpty
 
     /* Getters and Setters */
-    public VertexLinkedList getLinkedList() {
+    public VertexLinkedList getVertexLinkedList() {
         return this;
     } // getLinkedList
 
