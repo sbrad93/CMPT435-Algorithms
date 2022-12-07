@@ -1,20 +1,27 @@
 public class StableMatching {
 
-    public StableMatching() {
+    private Resident[] residents = null;
+    private Hospital[] hospitals = null;
+    private HashTable residentsPref = null;
+    private HashTable hospitalsPref = null;
+
+    public StableMatching(Resident _residents[], 
+                          Hospital _hospitals[], 
+                          HashTable _residentsPref, 
+                          HashTable _hospitalsPref) {
+        this.residents = _residents;
+        this.hospitals = _hospitals;
+        this.residentsPref = _residentsPref;
+        this.hospitalsPref = _hospitalsPref;
     }
 
-    public HashTable doMatching(String residents[], 
-                           String hospitals[], 
-                           HashTable residentsPref, 
-                           HashTable hospitalsPref) {
-
-
+    public HashTable doMatching() {
         HashTable matches = new HashTable(hospitals.length+1);
 
         // All residents start out as free
         Stack freeResidents = new Stack();
         for (int i=residents.length-1; i>=0; i--) {
-            freeResidents.push(residents[i]);
+            freeResidents.push(residents[i].getName());
         }
 
         // Array of residents already assigned a hospital
@@ -24,7 +31,7 @@ public class StableMatching {
         while (!freeResidents.isEmpty()) {
             // Get the next resident and their hospital preferences
             String currResident = freeResidents.pop().getName();
-            int resKey = Integer.parseInt(currResident.substring(currResident.lastIndexOf("r") + 1));
+            int resKey = Integer.parseInt(currResident.replaceAll("[^0-9]", ""));
             LinkedList currResidentPref = residentsPref.get(resKey);
 
 
@@ -35,7 +42,7 @@ public class StableMatching {
                 // Get the hospital name, capacity, and key
                 String hospitalName = hospital.getName();
                 int hospitalCapacity = getCapactiy(hospital.getName());
-                int hosKey = Integer.parseInt(hospitalName.substring(hospitalName.lastIndexOf("h") + 1));
+                int hosKey = Integer.parseInt(hospitalName.replaceAll("[^0-9]", ""));
 
                 // Check if the resident has already been assigned a hospital
                 boolean alreadyAssigned = false;
@@ -63,7 +70,7 @@ public class StableMatching {
                             String removedRes = currHospitalPref.removeAt(i);
 
                             // Remove the hospital from resident preferences
-                            int removeKey = Integer.parseInt(removedRes.substring(removedRes.lastIndexOf("r") + 1));
+                            int removeKey = Integer.parseInt(removedRes.replaceAll("[^0-9]", ""));
                             LinkedList removedPref = residentsPref.get(removeKey);
                             removedPref.removeNode(hospital.getName());    
                         }
@@ -109,7 +116,7 @@ public class StableMatching {
                             String removed = currHospitalPref.removeAt(i);
 
                             // Remove the hospital from the resident preferences
-                            int removeKey = Integer.parseInt(removed.substring(removed.lastIndexOf("r") + 1));
+                            int removeKey = Integer.parseInt(removed.replaceAll("[^0-9]", ""));
                             LinkedList removedPref = residentsPref.get(removeKey);
                             removedPref.removeNode(hospital.getName());    
 
@@ -139,22 +146,10 @@ public class StableMatching {
     // Get the capcaity of a given hospital
     public int getCapactiy(String hospitalName) {
         int capacity = 0;
-        switch (hospitalName) {
-            case "h1":
-                capacity = 4;
-                break;
-            case "h2":
-                capacity = 3;
-                break;
-            case "h3":
-                capacity = 3;
-                break;
-            case "h4":
-                capacity = 2;
-                break;
-            case "h5":
-                capacity = 1;
-                break;
+        for (int i=0; i<hospitals.length; i++) {
+            if (hospitals[i].getName().compareTo(hospitalName) == 0) {
+                capacity = hospitals[i].getCapactiy();
+            }
         }
         return capacity;
     }
