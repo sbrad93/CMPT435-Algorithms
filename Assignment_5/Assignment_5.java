@@ -62,7 +62,7 @@ class Assignment_5 {
                         String[] vertices = verticeStr.split(" - ");
                         String vertex1 = vertices[0].trim();
                         String vertex2 = vertices[1].trim();
-                        graphs[i].createEdge(vertex1, vertex2);
+                        graphs[i].createEdge(vertex1, vertex2, Integer.parseInt(weight));
 
                         if (myReader.hasNextLine()) {
                             line = myReader.nextLine();
@@ -72,8 +72,18 @@ class Assignment_5 {
                     }
                     System.out.println("-----------------------------------------------------------------------------");
                     System.out.println("Graph " + i + ":");
-                    graphs[i].getVertices().print();
+                    
                     System.out.println();
+                    boolean isValid = graphs[i].bellmanFord();
+                    if (isValid) {
+                        System.out.println("valid!!");
+                        // graphs[i].print();
+                    } else {
+                        System.out.println("not valid babbyyy");
+                        // graphs[i].print();
+                    }
+                   
+                    // graphs[i].getVertices().print();
                     i++;
                 }
             }

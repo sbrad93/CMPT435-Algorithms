@@ -1,16 +1,32 @@
 class Vertex {
 
-    public boolean isProcessed = false;
     private String id = "";
+    private int distance = -1;
     private Vertex next = null;
+    private Vertex prev = null;
+    private boolean isSrc = false;
+    private boolean isProcessed = false;
     private VertexLinkedList neighbors = null;
 
     /* Vertex class constructor */
     public Vertex(String id) {
         this.id = id;
+        this.distance = -1;
         this.next = null;
+        this.prev = null;
+        this.isSrc = false;
         this.isProcessed = false;
         this.neighbors = new VertexLinkedList();
+    }
+
+    public void print() {
+        System.out.println("Vertex: " + this.id + 
+                            "\nDistance: " + this.distance);
+        if (this.prev != null) {
+            System.out.println("Prev: " + this.prev.getID());
+        } else {
+            System.out.println("Prev: " + this.prev);
+        }
     }
 
     /* Getters and Setters */
@@ -22,6 +38,14 @@ class Vertex {
         return this.next;
     } // getNext
 
+    public Vertex getPrev() {
+        return this.prev;
+    } // getPrev
+
+    public int getDistance() {
+        return this.distance;
+    } // getDistance
+
     public void setID(String newID) {
         this.id = newID;
     } // setID
@@ -30,7 +54,27 @@ class Vertex {
         this.next = newNext;
     } // setNext
 
+    public void setPrev(Vertex newPrev) {
+        this.prev = newPrev; 
+    } // setPrev
+
+    public void setDistance(int newDist) {
+        this.distance = newDist;
+    } // setDistance
+
+    public void setProcessed(boolean bool) {
+        this.isProcessed = bool;
+    }
+
     public VertexLinkedList getNeighbors() {
         return this.neighbors;
     } // getNeighbors
+
+    public boolean isSrc() {
+        return this.isSrc;
+    }
+
+    public boolean isProcessed() {
+        return this.isProcessed;
+    }
 }
