@@ -198,15 +198,19 @@ public class StableMatching {
                 int j = 1;
                 // Loop through each of the residents preferences until a spot is found
                 while (freeResidents[i] != null) {
-                    String nextChoice = currResidentPref.getNode(j).getName();
-                    int hosKey = Integer.parseInt(nextChoice.replaceAll("[^0-9]", ""));
-                    int hospitalCapacity = getCapactiy(nextChoice);
-                    
-                    if (matches.get(hosKey) == null || matches.get(hosKey).getSize() < hospitalCapacity) {
-                        matches.put(hosKey, freeResidents[i].getName());
-                        freeResidents[i] = null;
+                    if (currResidentPref.getNode(j) == null) {
+                        break;
+                    } else {
+                        String nextChoice = currResidentPref.getNode(j).getName();
+                        int hosKey = Integer.parseInt(nextChoice.replaceAll("[^0-9]", ""));
+                        int hospitalCapacity = getCapactiy(nextChoice);
+                        
+                        if (matches.get(hosKey) == null || matches.get(hosKey).getSize() < hospitalCapacity) {
+                            matches.put(hosKey, freeResidents[i].getName());
+                            freeResidents[i] = null;
+                        }
+                        j++;
                     }
-                    j++;
                 }
             }
         }

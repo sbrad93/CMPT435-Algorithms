@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Main {
@@ -82,44 +84,33 @@ public class Main {
         e.printStackTrace();
     }
         // -------------------------------------------------------------------------------
-        double numH1 = 0;
-        double numH2 = 0;
-        double numH3 = 0;
-        double numH4 = 0;
-        double numH5 = 0;
-        for (int i=0; i<residents.length; i++) {
-            switch (residents[i].getFirstChoice()) {
-                case "h1":
-                    numH1++;
-                    break;
-                case "h2":
-                    numH2++;
-                    break;
-                case "h3":
-                    numH3++;
-                    break;
-                case "h4":
-                    numH4++;
-                    break;
-                case "h5":
-                    numH5++;
-                    break;
-            }
-        }
-
-        hospitals[0].setAcceptanceRate(hospitals[0].getCapacity() / (numH1*10));
-        hospitals[1].setAcceptanceRate(hospitals[1].getCapacity() / (numH2*10));
-        hospitals[2].setAcceptanceRate(hospitals[2].getCapacity() / (numH3*10));
-        hospitals[3].setAcceptanceRate(hospitals[3].getCapacity() / (numH4*10));
-        hospitals[4].setAcceptanceRate(hospitals[4].getCapacity() / (numH5*10));
 
         StableMatching matchMaker = new StableMatching(residents, hospitals, residentsPref, hospitalsPref);
 
+        // Pt. 1
         System.out.println("Stable Matching, Pt I");
         HashTable myStableMatches = matchMaker.doMatching();
         myStableMatches.printPairings();
-
         System.out.println();
+
+        // -------------------------------------------------------------------------------
+
+        // Pt.2
+        // Create list of resident first choices
+        ArrayList<String> firstChoices = new ArrayList<String>();
+        for (int i=0; i<residents.length; i++) {
+            firstChoices.add(residents[i].getFirstChoice());
+        }
+        // Set the 'acceptance rate' for each hospital
+        // Multiply the number of occurrences by a constant factor to ensure rate < 1
+        for (int i=0; i<firstChoices.size(); i++) {
+            int occurrences = Collections.frequency(firstChoices, firstChoices.get(i));
+            for (int j=0; j<hospitals.length; j++) {
+                if (firstChoices.get(i).compareTo(hospitals[j].getName()) == 0) {
+                    hospitals[j].setAcceptanceRate(hospitals[j].getCapacity() / (occurrences*10));
+                }
+            }
+        }
 
         System.out.println("Stable Matching, Pt II");
         HashTable moreMatches = matchMaker.doMatchingVariation();
