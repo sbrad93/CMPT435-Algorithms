@@ -43,7 +43,7 @@ public class StableMatching {
 
                 // Get the hospital name, capacity, and key
                 String hospitalName = hospital.getName();
-                int hospitalCapacity = getCapactiy(hospital.getName());
+                int hospitalCapacity = getCapacity(hospital.getName());
                 int hosKey = Integer.parseInt(hospitalName.replaceAll("[^0-9]", ""));
 
                 // Check if the resident has already been assigned a hospital
@@ -80,7 +80,8 @@ public class StableMatching {
                         // Resident has been assigned to a hospital at this point, so we can go to the next resident
                         break;
                     } else {
-                        // Hospital is already full, so we check for whack candidates that we can kick out (in the nicest way possible)
+                        // Resident is already assigned
+                        // Check if we can switch the current resident with another already matched resident
                         LinkedList currHospitalPref = hospitalsPref.get(hosKey);
                         Node activeAssignment = null;
                        
@@ -142,17 +143,6 @@ public class StableMatching {
         return matches;
     }
 
-    // Returns the capcaity of a given hospital
-    public int getCapactiy(String hospitalName) {
-        int capacity = 0;
-        for (int i=0; i<hospitals.length; i++) {
-            if (hospitals[i].getName().compareTo(hospitalName) == 0) {
-                capacity = hospitals[i].getCapacity();
-            }
-        }
-        return capacity;
-    }
-
     // Matching variation where hospitals don't rank residents
     public HashTable doMatchingVariation() {
         HashTable matches = new HashTable(hospitals.length+1);
@@ -203,7 +193,7 @@ public class StableMatching {
                     } else {
                         String nextChoice = currResidentPref.getNode(j).getName();
                         int hosKey = Integer.parseInt(nextChoice.replaceAll("[^0-9]", ""));
-                        int hospitalCapacity = getCapactiy(nextChoice);
+                        int hospitalCapacity = getCapacity(nextChoice);
                         
                         if (matches.get(hosKey) == null || matches.get(hosKey).getSize() < hospitalCapacity) {
                             matches.put(hosKey, freeResidents[i].getName());
@@ -215,6 +205,17 @@ public class StableMatching {
             }
         }
         return matches;
+    }
+
+    // Returns the capcaity of a given hospital
+    public int getCapacity(String hospitalName) {
+        int capacity = 0;
+        for (int i=0; i<hospitals.length; i++) {
+            if (hospitals[i].getName().compareTo(hospitalName) == 0) {
+                capacity = hospitals[i].getCapacity();
+            }
+        }
+        return capacity;
     }
 
     public void shuffle(Resident[] array) {

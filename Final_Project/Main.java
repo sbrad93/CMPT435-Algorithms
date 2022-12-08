@@ -104,7 +104,7 @@ public class Main {
         // Set the 'acceptance rate' for each hospital
         // Multiply the number of occurrences by a constant factor to ensure rate < 1
         for (int i=0; i<firstChoices.size(); i++) {
-            int occurrences = Collections.frequency(firstChoices, firstChoices.get(i));
+            double occurrences = Collections.frequency(firstChoices, firstChoices.get(i));
             for (int j=0; j<hospitals.length; j++) {
                 if (firstChoices.get(i).compareTo(hospitals[j].getName()) == 0) {
                     hospitals[j].setAcceptanceRate(hospitals[j].getCapacity() / (occurrences*10));
