@@ -34,8 +34,8 @@ public class Main {
                     String resKey = dataArr[0].replaceAll("[^0-9]", "");
                     String[] preferences = dataArr[1].split(" ");
 
-                    // Place the new reisdent in the resident array
-                    residents[i] = new Resident(dataArr[0]);
+                    // Place the new resident in the resident array
+                    residents[i] = new Resident(dataArr[0], preferences[0]);
 
                     // Put resident preferences in a hashtable
                     for (int k=0; k<preferences.length; k++) {
@@ -82,9 +82,47 @@ public class Main {
         e.printStackTrace();
     }
         // -------------------------------------------------------------------------------
+        double numH1 = 0;
+        double numH2 = 0;
+        double numH3 = 0;
+        double numH4 = 0;
+        double numH5 = 0;
+        for (int i=0; i<residents.length; i++) {
+            switch (residents[i].getFirstChoice()) {
+                case "h1":
+                    numH1++;
+                    break;
+                case "h2":
+                    numH2++;
+                    break;
+                case "h3":
+                    numH3++;
+                    break;
+                case "h4":
+                    numH4++;
+                    break;
+                case "h5":
+                    numH5++;
+                    break;
+            }
+        }
+
+        hospitals[0].setAcceptanceRate(hospitals[0].getCapacity() / (numH1*10));
+        hospitals[1].setAcceptanceRate(hospitals[1].getCapacity() / (numH2*10));
+        hospitals[2].setAcceptanceRate(hospitals[2].getCapacity() / (numH3*10));
+        hospitals[3].setAcceptanceRate(hospitals[3].getCapacity() / (numH4*10));
+        hospitals[4].setAcceptanceRate(hospitals[4].getCapacity() / (numH5*10));
 
         StableMatching matchMaker = new StableMatching(residents, hospitals, residentsPref, hospitalsPref);
+
+        System.out.println("Stable Matching, Pt I");
         HashTable myStableMatches = matchMaker.doMatching();
         myStableMatches.printPairings();
+
+        System.out.println();
+
+        System.out.println("Stable Matching, Pt II");
+        HashTable moreMatches = matchMaker.doMatchingVariation();
+        moreMatches.printPairings();
     }
 }
