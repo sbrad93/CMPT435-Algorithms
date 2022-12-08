@@ -1,0 +1,632 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CMPT 435
+% Fall 2022
+% Final Project
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from: http://www.LaTeXTemplates.com
+% Original author: % Frits Wenneker (http://www.howtotex.com)
+% License: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% Modified by Alan G. Labouseur  - alan@labouseur.com
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[letterpaper, 10pt,DIV=13]{scrartcl} 
+\usepackage{minted}
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm,xfrac} % Math packages
+\usepackage{sectsty} % Allows customizing section commands
+\usepackage{graphicx}
+\usepackage[lined,linesnumbered,commentsnumbered]{algorithm2e}
+\usepackage{listings}
+\usepackage{parskip}
+\usepackage{lastpage}
+
+\allsectionsfont{\normalfont\scshape} % Make all section titles in default font and small caps.
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{page \thepage\ of \pageref{LastPage}} % Page numbering for right footer
+
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs.
+
+\binoppenalty=3000
+\relpenalty=3000
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+   \normalfont \normalsize 
+   \textsc{CMPT 435 - Fall 2022 - Dr. Labouseur} \\[10pt] % Header stuff.
+   \horrule{0.5pt} \\[0.25cm] 	     % Top horizontal rule
+   \huge Final Project  \\     	 % Assignment title
+   \horrule{0.5pt} \\[0.25cm] 	     % Bottom horizontal rule
+}
+
+\author{Shannon Brady \\ \normalsize shannon.brady2@Marist.edu}
+
+\date{\normalsize\today} 	% Today's date.
+
+\begin{document}
+\maketitle % Print the title
+
+%----------------------------------------------------------------------------------------
+%   start Main
+%----------------------------------------------------------------------------------------
+\section{Main}
+\begin{enumerate}
+    \item Line 24-30: Get the number of residents and hospitals in the file. Initialize arrays of Residents and Hospitals.
+    \item Line 32-48: Create all residents and place in residents array. Get each of the residents' preferences and place in a HashTable of resident preferences. 
+    \item Line 52-77: Create all hospitals and place in hospitals array. Get each of the hospitals' preferences and place in a HashTable of hospital preferences. 
+    \item Line 91-93: Create the stable matches and print the final pairings.
+    \item Line 100-103: Create a list of resident first choices.
+    \item Line 106-113: Calculate a sudo 'acceptance rate' for each hospital. This will be used to rank the hospitals later.
+    \item Line 115-117: Create a stable matches variation where hospitals do not rank residents. Print the final pairings.
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String args[]) {
+        Resident[] residents = null;
+        HashTable residentsPref = null;
+
+        Hospital[] hospitals = null;
+        HashTable hospitalsPref = null;
+
+    try {
+        File file = new File("test.txt");
+        Scanner myReader = new Scanner(file);
+        int i = 0;
+        while (myReader.hasNextLine()) {
+            String data = myReader.nextLine();
+
+            // Get the number of residents and hospitals
+            // Use these values to intialize resident and hospital arrays, respectively
+            if (data.contains("Config")) {
+                String[] configs = data.split(":")[1].trim().split(" ");
+                String numResidents = configs[0];
+                String numHospitals = configs[1];
+                residents = new Resident[Integer.parseInt(numResidents)];
+                hospitals = new Hospital[Integer.parseInt(numHospitals)];
+            } 
+            
+            if (data.startsWith("r")) {
+                residentsPref = new HashTable(residents.length+1);
+                while (data.startsWith("r")) {
+                    String[] dataArr = data.split(": ");
+                    String resKey = dataArr[0].replaceAll("[^0-9]", "");
+                    String[] preferences = dataArr[1].split(" ");
+
+                    // Place the new resident in the resident array
+                    residents[i] = new Resident(dataArr[0], preferences[0]);
+
+                    // Put resident preferences in a hashtable
+                    for (int k=0; k<preferences.length; k++) {
+                        residentsPref.put(Integer.parseInt(resKey), preferences[k]);
+                    }
+                    data = myReader.nextLine();
+                    i++;
+                }
+                
+            } 
+
+            if (data.startsWith("h")) {
+                hospitalsPref = new HashTable(hospitals.length+1);
+                i = 0;
+                while (data.startsWith("h")) {
+                    String[] dataArr = data.split(": ");
+                    String hosKey = dataArr[0].replaceAll("[^0-9]", "");
+
+                    String[] hosData = dataArr[1].split(" - ");
+                    String capacity = hosData[0];
+                    String[] preferences = hosData[1].split(" ");
+
+                    // Place the new hospital in the hospital array
+                    hospitals[i] = new Hospital(dataArr[0], Integer.parseInt(capacity));
+                    
+                    // Put the hospital preferences in a hashtable
+                    for (int k=0; k<preferences.length; k++) {
+                        hospitalsPref.put(Integer.parseInt(hosKey), preferences[k]);
+                    }
+                    
+                    if (myReader.hasNextLine()) {
+                        data = myReader.nextLine();
+                    } else {
+                        break;
+                    }
+                    i++;
+                }
+                
+            }
+        }
+        myReader.close();
+    } catch (FileNotFoundException e) {
+        System.out.println("An error occurred.");
+        e.printStackTrace();
+    }
+        // -------------------------------------------------------------------------------
+
+        StableMatching matchMaker = new StableMatching(residents, hospitals, residentsPref, hospitalsPref);
+
+        // Pt. 1
+        System.out.println("Stable Matching, Pt I");
+        HashTable myStableMatches = matchMaker.doMatching();
+        myStableMatches.printPairings();
+        System.out.println();
+
+        // -------------------------------------------------------------------------------
+
+        // Pt.2
+        // Create list of resident first choices
+        ArrayList<String> firstChoices = new ArrayList<String>();
+        for (int i=0; i<residents.length; i++) {
+            firstChoices.add(residents[i].getFirstChoice());
+        }
+        // Set the 'acceptance rate' for each hospital
+        // Multiply the number of occurrences by a constant factor to ensure rate < 1
+        for (int i=0; i<firstChoices.size(); i++) {
+            double occurrences = Collections.frequency(firstChoices, firstChoices.get(i));
+            for (int j=0; j<hospitals.length; j++) {
+                if (firstChoices.get(i).compareTo(hospitals[j].getName()) == 0) {
+                    hospitals[j].setAcceptanceRate(hospitals[j].getCapacity() / (occurrences*10));
+                }
+            }
+        }
+
+        System.out.println("Stable Matching, Pt II");
+        HashTable moreMatches = matchMaker.doMatchingVariation();
+        moreMatches.printPairings();
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Main
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%   start StableMatching
+%----------------------------------------------------------------------------------------
+\section{StableMatching}
+\begin{enumerate}
+    \item The StableMatching class has the following attributes: 
+    \begin{enumerate}
+        \item residents: an array of Residents
+        \item hospitals: an array of Hospitals
+        \item residentPref: a HashTable of resident preferences
+        \item hospitalPref: a HashTable of hospital preferences
+    \end{enumerate}
+\end{enumerate}
+\subsection{Stable Matching Pt. 1}
+\begin{enumerate}
+    \item Line 24-27: Create a stack of free residents. Push all Residents to the stack.
+    \item Line 30: Create an array of already assigned residents.
+    \item Line 33-37: While there are still free residents, pop the next resident and get their preferences.
+    \item Line 41-140: Loop through each of the resident's preferences
+    \begin{enumerate}
+        \item Line 60-63: If the resident isn't already assigned, match the resident to the current hospital. Add the Resident to the assigned residents.
+        \begin{enumerate}
+            \item Line 66-78: If the hospital is now full, remove the worst resident from the hospital preferences. Remove the hospital from the resident preferences. 
+        \end{enumerate}
+        \item Line 85-11: Otherwise, check if there is an already matched resident we can switch with the current resident.
+        \begin{enumerate}
+            \item Line 94-109: The hospital prefers the current resident over the one currently assigned. The removed resident becomes free again. Match the current resident with the current hospital.
+        \end{enumerate}
+        \item Line 114-135: Check if the hospital is now full. Same process as Line 66-78.
+    \end{enumerate}
+\end{enumerate}
+
+\subsection{Stable Matching Pt. 2}
+\begin{enumerate}
+    \item Assumption: Hospitals with a lower 'acceptance rate' are inherently better, and therefore are more likely to be a resident's first choice.
+    \item Stability in this context: All unmatched residents have an equal chance at getting into the most selective hospital. More selective hospitals get to select their residents before less selective hospitals.
+    \item Residents that do not get their first choice are assigned the next available opening in their preferences list (if there is one). Given this, residents must choose there first choice on the basis of risk vs. outcome. Choosing a less selective hospital is safer based on the above assumption (less competition). 
+    \item 'Better' hospitals will have the greatest ratio of residents that chose said hospital as their first choice to residents that had a different first choice. This means that the best hospitals have the greatest number of residents that actually want to be there. The contrary is true for the worst hospitals. This reinforces existing reputations.
+    
+    \item Line 151: Shuffle the residents.
+    \item Line 154-157: Create an array of free residents
+    \item Line 160-161: Sort the hospitals from most selective to least selective
+    \item Line 163-181: Loop through all of the hospitals. If one of the free residents' first choice is that given hospital, match the resident and the hospital. Remove the resident from the free residents array. Break if any given hospital reaches capacity.
+    \item Line 184-206: For all residents that did not get their first choice, loop through each of their hospital preferences until an opening is found (if there is one). Match the resident with that given hospital.
+    \item Line 211-219: Method used to get the capacity of a Hospital based on a given hospital name.
+    \item Line 221-233: Method used to shuffle an array of Residents.
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+import java.util.Random;
+
+public class StableMatching {
+
+    private Resident[] residents = null;
+    private Hospital[] hospitals = null;
+    private HashTable residentsPref = null;
+    private HashTable hospitalsPref = null;
+
+    public StableMatching(Resident _residents[], 
+                          Hospital _hospitals[], 
+                          HashTable _residentsPref, 
+                          HashTable _hospitalsPref) {
+        this.residents = _residents;
+        this.hospitals = _hospitals;
+        this.residentsPref = _residentsPref;
+        this.hospitalsPref = _hospitalsPref;
+    }
+
+    public HashTable doMatching() {
+        HashTable matches = new HashTable(hospitals.length+1);
+
+        // All residents start out as free
+        Stack freeResidents = new Stack();
+        for (int i=residents.length-1; i>=0; i--) {
+            freeResidents.push(residents[i].getName());
+        }
+
+        // Array of residents already assigned a hospital
+        String[] assignedResidents = new String[residents.length];
+
+
+        while (!freeResidents.isEmpty()) {
+            // Get the next resident and their hospital preferences
+            String currResident = freeResidents.pop().getName();
+            int resKey = Integer.parseInt(currResident.replaceAll("[^0-9]", ""));
+            LinkedList currResidentPref = residentsPref.get(resKey);
+
+
+            // Loop through the current resident's hospital preferences
+            Node hospital = currResidentPref.getHead();
+            while (hospital != null) {
+
+                // Get the hospital name, capacity, and key
+                String hospitalName = hospital.getName();
+                int hospitalCapacity = getCapactiy(hospital.getName());
+                int hosKey = Integer.parseInt(hospitalName.replaceAll("[^0-9]", ""));
+
+                // Check if the resident has already been assigned a hospital
+                boolean alreadyAssigned = false;
+                for (int i=0; i<assignedResidents.length; i++) {
+                    if (assignedResidents[i] != null && currResident.compareTo(assignedResidents[i]) == 0) {
+                        alreadyAssigned = true;
+                    }
+                }
+
+                // Match all unassigned residents
+                if (!alreadyAssigned) {
+                    // If a hospital has room, provisionally assign the resident
+                    if (matches.get(hosKey) == null || 
+                            matches.get(hosKey).getSize() < hospitalCapacity) {
+                        matches.put(hosKey, currResident);
+                        assignedResidents[resKey-1] = currResident;
+
+                        // Check if the hospital is now full
+                        if (matches.get(hosKey).getSize() == hospitalCapacity) {
+                            // Remove the worst candidate
+                            LinkedList currHospitalPref = hospitalsPref.get(hosKey);
+        
+                            // Remove the resident from hospital preferences
+                            int i = currHospitalPref.getSize()-1;
+                            String removedRes = currHospitalPref.removeAt(i);
+
+                            // Remove the hospital from resident preferences
+                            int removeKey = Integer.parseInt(removedRes.replaceAll("[^0-9]", ""));
+                            LinkedList removedPref = residentsPref.get(removeKey);
+                            removedPref.removeNode(hospital.getName());    
+                        }
+
+                        // Resident has been assigned to a hospital at this point, so we can go to the next resident
+                        break;
+                    } else {
+                        // Resident is already assigned
+                        // Check if we can switch the current resident with another already matched resident
+                        LinkedList currHospitalPref = hospitalsPref.get(hosKey);
+                        Node activeAssignment = null;
+                       
+                        // Loop through current matches associated with current hospital, starting at the end of the list
+                        int i = matches.get(hosKey).getSize()-1;
+                        while (i >= 0) {
+                            activeAssignment = matches.get(hosKey).getNode(i);
+
+                            // The hospital prefers the current resident over the one currently assigned
+                            if (currHospitalPref.getIndex(activeAssignment.getName()) > currHospitalPref.getIndex(currResident)) {
+                                String removedResident = matches.get(hosKey).removeAt(i);
+
+                                // We now have to reassign the removed resident
+                                for (int j =0; j<assignedResidents.length; j++) {
+                                    if (assignedResidents[j] != null && assignedResidents[j].compareTo(removedResident) == 0) {
+                                        assignedResidents[j] = null;
+                                        freeResidents.push(removedResident);
+                                    }
+                                }
+                                // Create the new match with the current resident
+                                matches.put(hosKey, currResident);
+
+                                // We already found a matched resident that is a worse candidate than the current resident, so we don't need to keep looking
+                                break;
+                            }
+                            i--;
+                        }
+
+                        // Check if the hospital is now full
+                        if (matches.get(hosKey).getSize() == hospitalCapacity) {
+                            currHospitalPref = hospitalsPref.get(hosKey);
+        
+                            // Remove the resident from hospital preferences
+                            i = currHospitalPref.getSize()-1;
+                            String removed = currHospitalPref.removeAt(i);
+
+                            // Remove the hospital from the resident preferences
+                            int removeKey = Integer.parseInt(removed.replaceAll("[^0-9]", ""));
+                            LinkedList removedPref = residentsPref.get(removeKey);
+                            removedPref.removeNode(hospital.getName());    
+
+                            // We have to reassign the removed resident now so...
+                            for (int j=0; j<assignedResidents.length; j++) {
+                                if (assignedResidents[j] != null && removed.compareTo(assignedResidents[j]) == 0) {
+                                    assignedResidents[j] = null;
+
+                                    // Remove the initial match associated with the removed resident and push to free residents stack
+                                    freeResidents.push(removed);
+                                }
+                            }
+                        }
+                        // Resident has been assigned to a hospital at this point, so we can go to the next resident
+                        break;
+                    }
+                }
+                hospital = hospital.getNext();
+            }
+        }
+        return matches;
+    }
+
+    // Matching variation where hospitals don't rank residents
+    public HashTable doMatchingVariation() {
+        HashTable matches = new HashTable(hospitals.length+1);
+
+        // Place residents in random order
+        shuffle(residents);
+
+        // All residents start out as free
+        Resident[] freeResidents = new Resident[residents.length];
+        for (int i=0; i<residents.length; i++) {
+            freeResidents[i] = residents[i];
+        }
+
+        // Sort the hospitals from most selective to least selective
+        InsertionSort insertionSortObj = new InsertionSort();
+        insertionSortObj.sort(hospitals);
+
+        for (int i=0; i<hospitals.length; i++) {
+            int hosKey = Integer.parseInt(hospitals[i].getName().replaceAll("[^0-9]", ""));
+
+            // Place each (randomly selected) resident in their first choice as long as capacity hasn't been reached
+            for (int j=0; j<freeResidents.length; j++) {
+                if (freeResidents[j] != null) {
+                    Resident currResident = freeResidents[j];
+                    if (currResident.getFirstChoice().compareTo(hospitals[i].getName()) == 0) {
+                        freeResidents[j] = null;
+                        matches.put(hosKey, currResident.getName());
+
+                        // Check if hospital reached capacity
+                        if (matches.get(hosKey).getSize() == hospitals[i].getCapacity()) {
+                            break;
+                        }
+                    }
+                } 
+            }
+        }
+
+        // Loop through all the residents that didn't get their first choice
+        for (int i=0; i<freeResidents.length; i++) {
+            if (freeResidents[i] != null) {
+                int resKey = Integer.parseInt(freeResidents[i].getName().replaceAll("[^0-9]", ""));
+                LinkedList currResidentPref = residentsPref.get(resKey);
+                int j = 1;
+                // Loop through each of the residents preferences until a spot is found
+                while (freeResidents[i] != null) {
+                    if (currResidentPref.getNode(j) == null) {
+                        break;
+                    } else {
+                        String nextChoice = currResidentPref.getNode(j).getName();
+                        int hosKey = Integer.parseInt(nextChoice.replaceAll("[^0-9]", ""));
+                        int hospitalCapacity = getCapactiy(nextChoice);
+                        
+                        if (matches.get(hosKey) == null || matches.get(hosKey).getSize() < hospitalCapacity) {
+                            matches.put(hosKey, freeResidents[i].getName());
+                            freeResidents[i] = null;
+                        }
+                        j++;
+                    }
+                }
+            }
+        }
+        return matches;
+    }
+
+    // Returns the capcaity of a given hospital
+    public int getCapacity(String hospitalName) {
+        int capacity = 0;
+        for (int i=0; i<hospitals.length; i++) {
+            if (hospitals[i].getName().compareTo(hospitalName) == 0) {
+                capacity = hospitals[i].getCapacity();
+            }
+        }
+        return capacity;
+    }
+
+    public void shuffle(Resident[] array) {
+        Random randomGen = new Random();
+        int n = 0; // number of shuffled elements
+        while (n < array.length-1) {
+            n++;
+            int randIndex = randomGen.nextInt(n); // select a random index value
+
+            // swap the next array element with a random element
+            Resident temp = array[n];
+            array[n] = array[randIndex];
+            array[randIndex] = temp;
+        }
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end StableMatching
+%----------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------------
+%   start Resident
+%----------------------------------------------------------------------------------------
+\section{Resident}
+\begin{enumerate}
+    \item The Resident class represents each resident in the Stable Matching scenario. Each Resident has the following attributes:
+    \begin{enumerate}
+        \item name: resident name
+        \item firstChoice: the resident's first hospital choice
+    \end{enumerate}
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+class Resident {
+
+    private String name = null;
+    private String firstChoice = null;
+
+    public Resident(String _name, String _firstChoice) {
+        this.name = _name;
+        this.firstChoice = _firstChoice;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getFirstChoice() {
+        return this.firstChoice;
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Resident
+%----------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------------
+%   start Hospital
+%----------------------------------------------------------------------------------------
+\section{}
+\begin{enumerate}
+    \item The Hospital class represents each hospital in the Stable Matching scenario. Each Hospital has the following attributes:
+    \begin{enumerate}
+        \item name: hospital name
+        \item capacity: hospital capacity
+        \item acceptanceRate: a calculated sudo acceptance rate for each hospital
+    \end{enumerate}
+\end{enumerate}
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{java}
+import java.text.DecimalFormat;
+
+class Hospital {
+
+    public static final DecimalFormat df = new DecimalFormat("0.00");
+
+    private int capacity = 0;
+    private String name = null;
+    private double acceptanceRate = 0;
+
+    public Hospital(String _name, int _capacity) {
+        this.capacity = _capacity;
+        this.name = _name;
+        this.acceptanceRate = 0;
+    }
+
+    public void print() {
+        System.out.println("Hospital: " + this.name +
+                            "\nAcceptance Rate: " + df.format(this.acceptanceRate * 100));
+    }
+
+    public int getCapacity() {
+        return this.capacity;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public double getAcceptanceRate() {
+        return this.acceptanceRate;
+    }
+
+    public void setAcceptanceRate(double newRate) {
+        this.acceptanceRate = newRate;
+    }
+}
+\end{minted}
+%----------------------------------------------------------------------------------------
+%   end Hospital
+%---------------------------------------------------------------------------------------
+
+\end{document}
+

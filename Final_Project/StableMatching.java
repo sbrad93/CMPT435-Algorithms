@@ -1,20 +1,29 @@
+import java.util.Random;
+
 public class StableMatching {
 
-    public StableMatching() {
+    private Resident[] residents = null;
+    private Hospital[] hospitals = null;
+    private HashTable residentsPref = null;
+    private HashTable hospitalsPref = null;
+
+    public StableMatching(Resident _residents[], 
+                          Hospital _hospitals[], 
+                          HashTable _residentsPref, 
+                          HashTable _hospitalsPref) {
+        this.residents = _residents;
+        this.hospitals = _hospitals;
+        this.residentsPref = _residentsPref;
+        this.hospitalsPref = _hospitalsPref;
     }
 
-    public HashTable doMatching(String residents[], 
-                           String hospitals[], 
-                           HashTable residentsPref, 
-                           HashTable hospitalsPref) {
-
-
+    public HashTable doMatching() {
         HashTable matches = new HashTable(hospitals.length+1);
 
         // All residents start out as free
         Stack freeResidents = new Stack();
         for (int i=residents.length-1; i>=0; i--) {
-            freeResidents.push(residents[i]);
+            freeResidents.push(residents[i].getName());
         }
 
         // Array of residents already assigned a hospital
@@ -24,7 +33,7 @@ public class StableMatching {
         while (!freeResidents.isEmpty()) {
             // Get the next resident and their hospital preferences
             String currResident = freeResidents.pop().getName();
-            int resKey = Integer.parseInt(currResident.substring(currResident.lastIndexOf("r") + 1));
+            int resKey = Integer.parseInt(currResident.replaceAll("[^0-9]", ""));
             LinkedList currResidentPref = residentsPref.get(resKey);
 
 
@@ -34,8 +43,8 @@ public class StableMatching {
 
                 // Get the hospital name, capacity, and key
                 String hospitalName = hospital.getName();
-                int hospitalCapacity = getCapactiy(hospital.getName());
-                int hosKey = Integer.parseInt(hospitalName.substring(hospitalName.lastIndexOf("h") + 1));
+                int hospitalCapacity = getCapacity(hospital.getName());
+                int hosKey = Integer.parseInt(hospitalName.replaceAll("[^0-9]", ""));
 
                 // Check if the resident has already been assigned a hospital
                 boolean alreadyAssigned = false;
@@ -63,7 +72,7 @@ public class StableMatching {
                             String removedRes = currHospitalPref.removeAt(i);
 
                             // Remove the hospital from resident preferences
-                            int removeKey = Integer.parseInt(removedRes.substring(removedRes.lastIndexOf("r") + 1));
+                            int removeKey = Integer.parseInt(removedRes.replaceAll("[^0-9]", ""));
                             LinkedList removedPref = residentsPref.get(removeKey);
                             removedPref.removeNode(hospital.getName());    
                         }
@@ -71,7 +80,8 @@ public class StableMatching {
                         // Resident has been assigned to a hospital at this point, so we can go to the next resident
                         break;
                     } else {
-                        // Hospital is already full, so we check for whack candidates that we can kick out (in the nicest way possible)
+                        // Resident is already assigned
+                        // Check if we can switch the current resident with another already matched resident
                         LinkedList currHospitalPref = hospitalsPref.get(hosKey);
                         Node activeAssignment = null;
                        
@@ -109,7 +119,7 @@ public class StableMatching {
                             String removed = currHospitalPref.removeAt(i);
 
                             // Remove the hospital from the resident preferences
-                            int removeKey = Integer.parseInt(removed.substring(removed.lastIndexOf("r") + 1));
+                            int removeKey = Integer.parseInt(removed.replaceAll("[^0-9]", ""));
                             LinkedList removedPref = residentsPref.get(removeKey);
                             removedPref.removeNode(hospital.getName());    
 
@@ -119,13 +129,10 @@ public class StableMatching {
                                     assignedResidents[j] = null;
 
                                     // Remove the initial match associated with the removed resident and push to free residents stack
-                                    String removedMatch = matches.get(hosKey).removeNode(removed);
-                                    System.out.println(removedMatch);
                                     freeResidents.push(removed);
                                 }
                             }
                         }
-
                         // Resident has been assigned to a hospital at this point, so we can go to the next resident
                         break;
                     }
@@ -136,26 +143,92 @@ public class StableMatching {
         return matches;
     }
 
-    // Get the capcaity of a given hospital
-    public int getCapactiy(String hospitalName) {
+    // Matching variation where hospitals don't rank residents
+    public HashTable doMatchingVariation() {
+        HashTable matches = new HashTable(hospitals.length+1);
+
+        // Place residents in random order
+        shuffle(residents);
+
+        // All residents start out as free
+        Resident[] freeResidents = new Resident[residents.length];
+        for (int i=0; i<residents.length; i++) {
+            freeResidents[i] = residents[i];
+        }
+
+        // Sort the hospitals from most selective to least selective
+        InsertionSort insertionSortObj = new InsertionSort();
+        insertionSortObj.sort(hospitals);
+
+        for (int i=0; i<hospitals.length; i++) {
+            int hosKey = Integer.parseInt(hospitals[i].getName().replaceAll("[^0-9]", ""));
+
+            // Place each (randomly selected) resident in their first choice as long as capacity hasn't been reached
+            for (int j=0; j<freeResidents.length; j++) {
+                if (freeResidents[j] != null) {
+                    Resident currResident = freeResidents[j];
+                    if (currResident.getFirstChoice().compareTo(hospitals[i].getName()) == 0) {
+                        freeResidents[j] = null;
+                        matches.put(hosKey, currResident.getName());
+
+                        // Check if hospital reached capacity
+                        if (matches.get(hosKey).getSize() == hospitals[i].getCapacity()) {
+                            break;
+                        }
+                    }
+                } 
+            }
+        }
+
+        // Loop through all the residents that didn't get their first choice
+        for (int i=0; i<freeResidents.length; i++) {
+            if (freeResidents[i] != null) {
+                int resKey = Integer.parseInt(freeResidents[i].getName().replaceAll("[^0-9]", ""));
+                LinkedList currResidentPref = residentsPref.get(resKey);
+                int j = 1;
+                // Loop through each of the residents preferences until a spot is found
+                while (freeResidents[i] != null) {
+                    if (currResidentPref.getNode(j) == null) {
+                        break;
+                    } else {
+                        String nextChoice = currResidentPref.getNode(j).getName();
+                        int hosKey = Integer.parseInt(nextChoice.replaceAll("[^0-9]", ""));
+                        int hospitalCapacity = getCapacity(nextChoice);
+                        
+                        if (matches.get(hosKey) == null || matches.get(hosKey).getSize() < hospitalCapacity) {
+                            matches.put(hosKey, freeResidents[i].getName());
+                            freeResidents[i] = null;
+                        }
+                        j++;
+                    }
+                }
+            }
+        }
+        return matches;
+    }
+
+    // Returns the capcaity of a given hospital
+    public int getCapacity(String hospitalName) {
         int capacity = 0;
-        switch (hospitalName) {
-            case "h1":
-                capacity = 4;
-                break;
-            case "h2":
-                capacity = 3;
-                break;
-            case "h3":
-                capacity = 3;
-                break;
-            case "h4":
-                capacity = 2;
-                break;
-            case "h5":
-                capacity = 1;
-                break;
+        for (int i=0; i<hospitals.length; i++) {
+            if (hospitals[i].getName().compareTo(hospitalName) == 0) {
+                capacity = hospitals[i].getCapacity();
+            }
         }
         return capacity;
+    }
+
+    public void shuffle(Resident[] array) {
+        Random randomGen = new Random();
+        int n = 0; // number of shuffled elements
+        while (n < array.length-1) {
+            n++;
+            int randIndex = randomGen.nextInt(n); // select a random index value
+
+            // swap the next array element with a random element
+            Resident temp = array[n];
+            array[n] = array[randIndex];
+            array[randIndex] = temp;
+        }
     }
 }
